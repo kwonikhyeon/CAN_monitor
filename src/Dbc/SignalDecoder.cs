@@ -76,11 +76,7 @@ public sealed class SignalDecoder : ISignalDecoder
         if (!isSigned || length == 64) return unchecked((long)raw);
         ulong signBit = 1UL << (length - 1);
         if ((raw & signBit) == 0) return (long)raw;
-        // Set all bits above the signal length to 1
-        for (int i = length; i < 64; i++)
-        {
-            raw |= 1UL << i;
-        }
-        return unchecked((long)raw);
+        ulong mask = ~((1UL << length) - 1);
+        return unchecked((long)(raw | mask));
     }
 }
