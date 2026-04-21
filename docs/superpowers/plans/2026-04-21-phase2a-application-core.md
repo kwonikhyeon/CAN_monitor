@@ -587,7 +587,7 @@ git commit -m "feat(application): add RawFrameStore bounded ring buffer"
 
 - `IAlarmRule.Evaluate(SignalValue value, AlarmState? current)` → `AlarmState?`; `null` = 변경 없음, 값 반환 = 현재 상태로 교체.
 - `AlarmEngine`는 `ImmutableDictionary<string, AlarmState>`을 `Interlocked.Exchange`로 교체, 변경된 항목만 `AlarmChanges`에 emit.
-- `AlarmRuleFactory.CreatePhase2aRules()`는 Phase 2a 범위의 고정 rule 리스트 반환 (TC-002/010에 필요한 최소 세트).
+- `AlarmRuleFactory.CreatePhase2aRules()`는 Phase 2a에서 `Array.Empty<IAlarmRule>()`을 반환 (Design Decision #6 / Deliverable 명세 참조). rule 정의와 hub 배선은 Plan B 책임.
 
 - [ ] **Step 1: `IAlarmRule` 작성**
 
@@ -780,7 +780,7 @@ public static class AlarmRuleFactory
 }
 ```
 
-(Phase 2a integration tests는 rule 없이도 TC-001/002/010을 구현 가능하므로 빈 리스트로 출발. 실제 rule은 TC 통합 task에서 필요해질 때 추가.)
+(Phase 2a integration tests는 rule 없이도 TC-001/002/010을 판정할 수 있도록 설계되었다 — `CanEventHub.DecodedSignals` 직접 구독. 실제 rule 정의 및 hub 배선은 Plan B 범위.)
 
 - [ ] **Step 6: 테스트 재실행**
 
