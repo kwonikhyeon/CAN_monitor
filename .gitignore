@@ -30,3 +30,10 @@ venv/
 # Logs
 logs/
 *.log
+
+# Crash dumps
+*.stackdump
+
+# Local-only (not part of repo)
+data/
+docs/superpowers/specs/
