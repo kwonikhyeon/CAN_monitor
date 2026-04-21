@@ -2737,23 +2737,19 @@ public sealed class Tc001FrameRateTests
         var ctx = new TestRunnerContext(bus, new Subject<SignalValue>(), new Subject<AlarmState>(), new NoopDecoder());
         var runner = new TestRunner(new IStepExecutor[] { new AssertFrameRateStepExecutor() }, ctx);
 
-        var cts = new CancellationTokenSource();
-        _ = Task.Run(async () =>
-        {
-            while (!cts.IsCancellationRequested)
-            {
-                bus.Inject(new CanFrame(0x0CF00400, true, new byte[] { 1 }, DateTimeOffset.UtcNow, CanDirection.Rx));
-                await Task.Delay(10);
-            }
-        });
-
         var testCase = new TestCase(
             "TC-001", "Frame", "주기/누락",
             Prerequisites: Array.Empty<TestStep>(),
             Steps: new TestStep[] { new AssertFrameRateStep(0x0CF00400, 100, TolerancePct: 20) });
 
-        var result = await runner.RunAsync(testCase);
-        cts.Cancel();
+        // Deterministic injection: start runner (executor subscribes synchronously before first await),
+        // then inject 100 frames synchronously so they all land in the first Buffer(1s) window.
+        // Avoids Windows timer-granularity flakiness (see AssertFrameRateStepExecutorTests fix).
+        var runTask = runner.RunAsync(testCase);
+        for (int i = 0; i < 100; i++)
+            bus.Inject(new CanFrame(0x0CF00400, true, new byte[] { 1 }, DateTimeOffset.UtcNow, CanDirection.Rx));
+
+        var result = await runTask;
 
         result.Outcome.Should().Be(TestOutcome.Passed);
         result.StepLog.Should().ContainSingle().Which.Outcome.Should().Be(StepOutcome.Passed);
