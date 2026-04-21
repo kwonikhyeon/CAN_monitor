@@ -2203,6 +2203,7 @@ Create `src/Application/Testing/Executors/ObserveSignalStepExecutor.cs`:
 
 ```csharp
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using CanMonitor.Core.Abstractions;
 using CanMonitor.Core.Models;
 using CanMonitor.Core.Testing;
