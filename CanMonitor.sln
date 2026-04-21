@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CanMonitor.Integration.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CanMonitor.Application", "src\Application\CanMonitor.Application.csproj", "{BC70DDBC-16F4-49B5-BE54-1482107C5E0B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CanMonitor.Application.Tests", "tests\Application.Tests\CanMonitor.Application.Tests.csproj", "{603961CB-BFC7-4661-BB48-EBA834067BD6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +66,10 @@ Global
 		{BC70DDBC-16F4-49B5-BE54-1482107C5E0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC70DDBC-16F4-49B5-BE54-1482107C5E0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC70DDBC-16F4-49B5-BE54-1482107C5E0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{603961CB-BFC7-4661-BB48-EBA834067BD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{603961CB-BFC7-4661-BB48-EBA834067BD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{603961CB-BFC7-4661-BB48-EBA834067BD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{603961CB-BFC7-4661-BB48-EBA834067BD6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{95E82EC4-9F84-4EDF-A3AB-A7C8A1DE7B45} = {D16A0541-B7AC-4351-9437-405A842D8D40}
@@ -74,5 +80,6 @@ Global
 		{8BE716D9-3E4A-4692-9947-06103DCA25D9} = {E2C924D4-B842-4DBE-BB41-EBA016E9189A}
 		{72DF6D10-397B-4182-B7B9-8A36FC8C3D72} = {E2C924D4-B842-4DBE-BB41-EBA016E9189A}
 		{BC70DDBC-16F4-49B5-BE54-1482107C5E0B} = {D16A0541-B7AC-4351-9437-405A842D8D40}
+		{603961CB-BFC7-4661-BB48-EBA834067BD6} = {E2C924D4-B842-4DBE-BB41-EBA016E9189A}
 	EndGlobalSection
 EndGlobal
