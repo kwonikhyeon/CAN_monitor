@@ -91,4 +91,18 @@ public sealed class AlarmEngineTests
         emitted.Should().BeEmpty();
         engine.CurrentAlarms.Should().BeEmpty();
     }
+
+    [Fact]
+    public void Dispose_completes_observable()
+    {
+        var engine = new AlarmEngine(Array.Empty<IAlarmRule>());
+        var completed = false;
+        using var _ = engine.AlarmChanges.Subscribe(
+            onNext: _ => { },
+            onCompleted: () => { completed = true; });
+
+        engine.Dispose();
+
+        completed.Should().BeTrue();
+    }
 }

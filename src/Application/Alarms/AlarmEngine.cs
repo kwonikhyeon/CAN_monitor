@@ -6,7 +6,7 @@ using CanMonitor.Core.Models;
 
 namespace CanMonitor.Application.Alarms;
 
-public sealed class AlarmEngine : IAlarmEngine
+public sealed class AlarmEngine : IAlarmEngine, IDisposable
 {
     private readonly IReadOnlyList<IAlarmRule> _rules;
     private readonly Subject<AlarmState> _changes = new();
@@ -42,5 +42,11 @@ public sealed class AlarmEngine : IAlarmEngine
 
         foreach (var state in diffs)
             _changes.OnNext(state);
+    }
+
+    public void Dispose()
+    {
+        _changes.OnCompleted();
+        _changes.Dispose();
     }
 }
