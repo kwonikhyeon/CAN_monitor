@@ -1,0 +1,32 @@
+# Build
+bin/
+obj/
+out/
+*.user
+*.suo
+.vs/
+
+# Test artifacts
+TestResults/
+coverage.*.xml
+*.trx
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Logs
+logs/
+*.log
