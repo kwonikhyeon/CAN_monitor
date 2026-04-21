@@ -25,6 +25,7 @@
     <ProjectReference Include="..\..\src\Core\CanMonitor.Core.csproj" />
     <ProjectReference Include="..\..\src\Dbc\CanMonitor.Dbc.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.Can\CanMonitor.Infrastructure.Can.csproj" />
+    <ProjectReference Include="..\..\src\Application\CanMonitor.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>
