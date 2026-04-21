@@ -1,0 +1,78 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: 
+
+
+BO_ 2348813824 Status_0x0C000E00: 8 TCU
+ SG_ Alarm_Status : 49|2@0+ (1,0) [0|3] "" Vector__XXX
+ SG_ Operating_Mode : 43|4@0+ (1,0) [0|15] "" Vector__XXX
+ SG_ Temperature_Switch_Status : 47|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ Range_2nd_Status : 19|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ Range_3rd_Status : 23|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ Gear_Lever_R_Status : 11|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ Range_1st_Status : 15|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ Gear_Lever_F_Status : 3|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ Gear_Lever_N_Status : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 512 Alarms_0x200: 8 TCU
+ SG_ Overspeed_Direction_Change : 32|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ EEC1_Timeout : 25|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ Pressure_1_Fault : 16|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ Pressure_2_Fault : 17|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ FOR_Open : 8|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ FOR_Low : 9|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ FOR_High : 10|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ REV_Open : 11|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ REV_Low : 12|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ REV_High : 13|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ Pedal_Low : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ Pedal_High : 1|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ Pedal_Failure : 2|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ Power_Low : 3|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ Power_High : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+
+
+
+
+
+BA_DEF_ BO_  "GenMsgCycleTime" INT 0 65535;
+BA_DEF_DEF_  "GenMsgCycleTime" 0;
+BA_ "GenMsgCycleTime" BO_ 2348813824 100;
+BA_ "GenMsgCycleTime" BO_ 512 1000;
+
+
+
+
