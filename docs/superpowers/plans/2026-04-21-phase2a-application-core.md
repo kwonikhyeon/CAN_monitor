@@ -186,7 +186,9 @@ Create `tests/Application.Tests/CanMonitor.Application.Tests.csproj`:
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
     <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
     <RootNamespace>CanMonitor.Application.Tests</RootNamespace>
   </PropertyGroup>
 
@@ -197,11 +199,16 @@ Create `tests/Application.Tests/CanMonitor.Application.Tests.csproj`:
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.0" />
+    <PackageReference Include="FluentAssertions" Version="6.12.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
     <PackageReference Include="xunit" Version="2.9.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
-    <PackageReference Include="FluentAssertions" Version="6.12.2" />
     <PackageReference Include="Microsoft.Reactive.Testing" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
   </ItemGroup>
 
 </Project>
