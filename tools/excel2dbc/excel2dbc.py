@@ -50,21 +50,33 @@ class MessageDef:
 
 
 # ---------- Hard-coded layout for TCU Protocol Excel ----------
+#
+# Source of truth: data/120HP_TCU_CAN_Protocol_Updated_v241107.xlsx,
+# sheet "All_Messages_Detail" columns (Byte, Bit, Signal name, Length).
+#
+# start_bit encoding uses the Motorola @0+ ("big_endian") sawtooth layout:
+#   - 1-bit signal:    start = byte * 8 + bit
+#   - multi-bit signal: start = byte * 8 + MSB_bit
+#
+# The Excel "Bit" column uses MSB-first notation in most cells (e.g. "3,0"
+# means MSB=3, LSB=0 for a 4-bit field). Alarm_Status is the one exception
+# — its cell reads "0,1" but the data-range key "10b: Error"=2 requires
+# bit 1 to carry the MSB, so we treat "0,1" as (LSB,MSB) and derive MSB=1.
 
 _CONFIRMED_120HP: list[MessageDef] = [
     MessageDef(
         frame_id=0x0C000E00, is_extended=True,
         name="Status_0x0C000E00", dlc=8, cycle_time_ms=100,
         signals=[
-            SignalDef("Gear_Lever_N_Status", 63, 1, 1, 0, 0, 1, None, False, False),
-            SignalDef("Gear_Lever_F_Status", 59, 1, 1, 0, 0, 1, None, False, False),
-            SignalDef("Gear_Lever_R_Status", 51, 1, 1, 0, 0, 1, None, False, False),
-            SignalDef("Range_1st_Status",    55, 1, 1, 0, 0, 1, None, False, False),
-            SignalDef("Range_2nd_Status",    43, 1, 1, 0, 0, 1, None, False, False),
-            SignalDef("Range_3rd_Status",    47, 1, 1, 0, 0, 1, None, False, False),
-            SignalDef("Temperature_Switch_Status", 23, 1, 1, 0, 0, 1, None, False, False),
-            SignalDef("Operating_Mode",      19, 4, 1, 0, 0, 15, None, False, False),
-            SignalDef("Alarm_Status",        8,  2, 1, 0, 0, 3, None, False, False),
+            SignalDef("Gear_Lever_N_Status",        7, 1, 1, 0, 0, 1,  None, False, False),
+            SignalDef("Gear_Lever_F_Status",        3, 1, 1, 0, 0, 1,  None, False, False),
+            SignalDef("Range_1st_Status",          15, 1, 1, 0, 0, 1,  None, False, False),
+            SignalDef("Gear_Lever_R_Status",       11, 1, 1, 0, 0, 1,  None, False, False),
+            SignalDef("Range_3rd_Status",          23, 1, 1, 0, 0, 1,  None, False, False),
+            SignalDef("Range_2nd_Status",          19, 1, 1, 0, 0, 1,  None, False, False),
+            SignalDef("Temperature_Switch_Status", 47, 1, 1, 0, 0, 1,  None, False, False),
+            SignalDef("Operating_Mode",            43, 4, 1, 0, 0, 15, None, False, False),
+            SignalDef("Alarm_Status",              49, 2, 1, 0, 0, 3,  None, False, False),
         ],
     ),
     MessageDef(
@@ -114,7 +126,7 @@ def to_cantools_signal(s: SignalDef) -> Signal:
         name=s.name,
         start=s.start_bit,
         length=s.length,
-        byte_order="little_endian",
+        byte_order="big_endian",
         is_signed=s.is_signed,
         conversion=conversion,
         minimum=s.minimum,
