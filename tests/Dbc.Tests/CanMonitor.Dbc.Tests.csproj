@@ -28,6 +28,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\..\dbc\confirmed\*.dbc" Link="confirmed\%(FileName)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\Core\CanMonitor.Core.csproj" />
     <ProjectReference Include="..\..\src\Dbc\CanMonitor.Dbc.csproj" />
   </ItemGroup>
