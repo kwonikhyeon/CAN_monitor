@@ -2344,6 +2344,7 @@ Create `src/Application/Testing/Executors/ObserveBitStepExecutor.cs`:
 
 ```csharp
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using CanMonitor.Core.Abstractions;
 using CanMonitor.Core.Testing;
 
