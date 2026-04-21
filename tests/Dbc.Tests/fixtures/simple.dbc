@@ -1,0 +1,15 @@
+VERSION ""
+
+NS_ :
+
+BS_:
+
+BU_: TCU Display
+
+BO_ 256 TestMsg: 8 TCU
+ SG_ Flag : 0|1@0+ (1,0) [0|1] "" Display
+ SG_ Value : 8|8@0+ (1,0) [0|255] "" Display
+
+BA_DEF_ BO_ "GenMsgCycleTime" INT 0 10000;
+BA_DEF_DEF_ "GenMsgCycleTime" 0;
+BA_ "GenMsgCycleTime" BO_ 256 100;
