@@ -996,7 +996,7 @@ public sealed class ManualBusStatusPublisherTests
     {
         var pub = new ManualBusStatusPublisher();
         var received = new List<BusStatusChange>();
-        using var _ = pub.Changes.Subscribe(received.Add);
+        using var _ = pub.Changes.Skip(1).Subscribe(received.Add);
 
         var change = new BusStatusChange(BusStatus.Connected, "ok", null, 0, DateTimeOffset.UtcNow);
         pub.Publish(change);
