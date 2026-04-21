@@ -2435,20 +2435,16 @@ public sealed class AssertFrameRateStepExecutorTests
         var ctx = new TestRunnerContext(bus, new Subject<SignalValue>(), new Subject<AlarmState>(), new NoopDecoder());
         var exec = new AssertFrameRateStepExecutor();
 
-        var cts = new CancellationTokenSource();
-        _ = Task.Run(async () =>
-        {
-            while (!cts.IsCancellationRequested)
-            {
-                bus.Inject(new CanFrame(0x200, false, new byte[] { 1 }, DateTimeOffset.UtcNow, CanDirection.Rx));
-                await Task.Delay(10);
-            }
-        });
-
-        var outcome = await exec.ExecuteAsync(
+        // Deterministic: start the executor (subscribe completes synchronously before first await),
+        // then inject 100 frames synchronously so all land in the first Buffer(1s) window.
+        var execTask = exec.ExecuteAsync(
             new AssertFrameRateStep(0x200, 100, TolerancePct: 25),
             ctx, CancellationToken.None);
-        cts.Cancel();
+
+        for (int i = 0; i < 100; i++)
+            bus.Inject(new CanFrame(0x200, false, new byte[] { 1 }, DateTimeOffset.UtcNow, CanDirection.Rx));
+
+        var outcome = await execTask;
 
         outcome.Should().Be(StepOutcome.Passed);
     }
