@@ -3,6 +3,7 @@ using CanMonitor.Core.Abstractions;
 using CanMonitor.Core.Models;
 using DbcParserLib;
 using DbcParserLib.Model;
+using LibDbc     = DbcParserLib.Dbc;
 using LibMessage = DbcParserLib.Model.Message;
 using LibSignal  = DbcParserLib.Model.Signal;
 
@@ -30,14 +31,10 @@ public sealed class DbcParserLibProvider : IDbcProvider
         throw new NotSupportedException("DBC save is part of feature H (Phase 3+).");
     }
 
-    private static DbcDatabase ConvertDbc(dynamic parsed)
+    private static DbcDatabase ConvertDbc(LibDbc parsed)
     {
-        var messageList = new List<DbcMessage>();
-        foreach (LibMessage msg in parsed.Messages)
-        {
-            messageList.Add(ConvertMessage(msg));
-        }
-        return new DbcDatabase(messageList);
+        var messages = parsed.Messages.Select(ConvertMessage).ToArray();
+        return new DbcDatabase(messages);
     }
 
     private static DbcMessage ConvertMessage(LibMessage m)
