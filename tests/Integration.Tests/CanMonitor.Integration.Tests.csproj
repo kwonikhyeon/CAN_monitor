@@ -27,4 +27,10 @@
     <ProjectReference Include="..\..\src\Infrastructure.Can\CanMonitor.Infrastructure.Can.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\..\dbc\confirmed\*.dbc" Link="confirmed\%(FileName)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
