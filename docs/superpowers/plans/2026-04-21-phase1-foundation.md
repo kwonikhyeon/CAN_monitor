@@ -2495,8 +2495,9 @@ public sealed class FoundationSmokeTests
             });
 
         // Act — inject a frame matching 0x0C000E00 with Gear_Lever_N_Status=1
-        // Motorola @0+, bit 63 is the MSB of byte 7. Setting byte 7 MSB => 0x80.
-        var payload = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0x80 };
+        // Gear_Lever_N_Status is Motorola @0+ with start bit 7 (MSB of byte 0),
+        // length 1. Setting byte 0 MSB => 0x80.
+        var payload = new byte[] { 0x80, 0, 0, 0, 0, 0, 0, 0 };
         bus.Inject(new CanFrame(0x0C000E00, IsExtended: true, Data: payload,
             Timestamp: DateTimeOffset.UtcNow, Direction: CanDirection.Rx));
 
