@@ -2,10 +2,11 @@
 
 PC-side CAN bus monitor, emulator, and jig test runner for tractor TCU (변속제어기).
 
-Status: **Phase 1 (Foundation)** — Core / Dbc / Infrastructure.Can libraries + excel2dbc.
+Status: **Phase 2a (Application)** — CanEventHub / Receive·Transmit Pipelines / AlarmEngine / TxScheduler + Test DSL + TC-001/002/010 자동화 완료. Phase 2b (Q1/Q3 해제 후 EEC1 heartbeat + VirtualInput + TC-024) 대기.
 
 - Spec: [`docs/superpowers/specs/2026-04-20-can-monitor-design.md`](docs/superpowers/specs/2026-04-20-can-monitor-design.md)
 - Phase 1 plan: [`docs/superpowers/plans/2026-04-21-phase1-foundation.md`](docs/superpowers/plans/2026-04-21-phase1-foundation.md)
+- Phase 2a plan: [`docs/superpowers/plans/2026-04-21-phase2a-application-core.md`](docs/superpowers/plans/2026-04-21-phase2a-application-core.md)
 
 ## Build
 
@@ -34,6 +35,7 @@ python excel2dbc.py \
 - `src/Core/` — domain records + contracts, no deps
 - `src/Dbc/` — DbcParserLib wrapper, SignalDecoder
 - `src/Infrastructure.Can/` — bus abstraction + VirtualCanBus
+- `src/Application/` — Rx 파이프라인 조립 + Test DSL runner (Phase 2a)
 - `dbc/confirmed/` — validated DBCs, CI snapshot baseline
 - `dbc/experimental/` — reserved for Q1/Q3/Q5 confirmed signals
 
