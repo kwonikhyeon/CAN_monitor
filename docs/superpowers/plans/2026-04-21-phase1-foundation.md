@@ -1411,7 +1411,7 @@ Run:
 cd /c/dev/CAN_monitor
 head -30 dbc/confirmed/120HP_NoPto.dbc
 ```
-Expected: includes `VERSION ""`, `BO_ 201326080 Status_0x0C000E00: 8 TCU`, `SG_ Gear_Lever_N_Status : 63|1@0+ (1,0) [0|1] "" Vector__XXX`, etc. (Frame id `201326080` = `0x0C000E00`.)
+Expected: includes `VERSION ""`, `BO_ 201326080 Status_0x0C000E00: 8 TCU`, `SG_ Gear_Lever_N_Status : 7|1@0+ (1,0) [0|1] "" Vector__XXX`, etc. (Frame id `201326080` = `0x0C000E00`; `@0+` = Motorola big-endian.)
 
 - [ ] **Step 3: Commit**
 
