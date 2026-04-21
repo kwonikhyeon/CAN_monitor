@@ -104,6 +104,12 @@ _CONFIRMED_120HP: list[MessageDef] = [
 
 _CONFIRMED_160HP: list[MessageDef] = [
     *_CONFIRMED_120HP,
+    # NOTE: ExtendedStatus_0x202 start_bits below are UNVERIFIED placeholders.
+    # The Excel (All_Messages_Detail) has no per-signal Byte+Bit breakdown for
+    # 0x202 — only a summary row naming the 4 switches. These are 1-bit signals
+    # (Intel and Motorola start_bit are identical for length=1), so the layout
+    # is safe to build, but the exact bytes/bits must be confirmed against the
+    # 160HP release notes or customer spec before this is treated as truth.
     MessageDef(
         frame_id=0x202, is_extended=False,
         name="ExtendedStatus_0x202", dlc=8, cycle_time_ms=100,
