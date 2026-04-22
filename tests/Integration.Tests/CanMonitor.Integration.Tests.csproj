@@ -34,4 +34,10 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\..\dbc\experimental\*.dbc" Link="experimental\%(FileName)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
