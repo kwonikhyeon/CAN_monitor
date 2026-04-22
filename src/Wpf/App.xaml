@@ -1,6 +1,12 @@
 <Application x:Class="CanMonitor.Wpf.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:dashVm="clr-namespace:CanMonitor.Wpf.Dashboard"
+             xmlns:dashWidget="clr-namespace:CanMonitor.Wpf.Dashboard.Widgets"
+             xmlns:navVm="clr-namespace:CanMonitor.Wpf.Navigation"
+             xmlns:dashView="clr-namespace:CanMonitor.Wpf.Dashboard"
+             xmlns:wView="clr-namespace:CanMonitor.Wpf.Dashboard.Widgets"
+             xmlns:navView="clr-namespace:CanMonitor.Wpf.Navigation">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -8,6 +14,16 @@
                 <ResourceDictionary Source="Themes/Styles/Typography.xaml" />
                 <ResourceDictionary Source="Themes/Styles/Controls.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate DataType="{x:Type dashVm:DashboardViewModel}">
+                <dashView:DashboardView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type navVm:PlaceholderViewModel}">
+                <navView:PlaceholderView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type wView:PlaceholderWidgetViewModel}">
+                <wView:PlaceholderWidgetView/>
+            </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
