@@ -10,6 +10,7 @@ public sealed class VirtualInputHeartbeat : IBusHeartbeatProvider, IDisposable
     private const uint VirtualInputExtendedId = 0x18FF5080u;
     private readonly IVirtualInputService _service;
     private readonly BehaviorSubject<bool> _enabled = new(false);
+    private bool _disposed;
 
     public VirtualInputHeartbeat(IVirtualInputService service)
     {
@@ -62,7 +63,16 @@ public sealed class VirtualInputHeartbeat : IBusHeartbeatProvider, IDisposable
 
     public void Dispose()
     {
-        _enabled.OnCompleted();
+        if (_disposed) return;
+        _disposed = true;
+        try
+        {
+            _enabled.OnCompleted();
+        }
+        catch (ObjectDisposedException)
+        {
+            // Subject was already disposed
+        }
         _enabled.Dispose();
     }
 }

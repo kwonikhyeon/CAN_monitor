@@ -11,6 +11,7 @@ public sealed class Eec1HeartbeatProvider : IBusHeartbeatProvider, IDisposable
     private readonly BehaviorSubject<bool> _enabled = new(true);
     private int _lowCode;
     private int _highCode;
+    private bool _disposed;
 
     public string Name => "EEC1";
     public TimeSpan Period => TimeSpan.FromMilliseconds(100);
@@ -38,7 +39,16 @@ public sealed class Eec1HeartbeatProvider : IBusHeartbeatProvider, IDisposable
 
     public void Dispose()
     {
-        _enabled.OnCompleted();
+        if (_disposed) return;
+        _disposed = true;
+        try
+        {
+            _enabled.OnCompleted();
+        }
+        catch (ObjectDisposedException)
+        {
+            // Subject was already disposed
+        }
         _enabled.Dispose();
     }
 }

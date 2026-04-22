@@ -1,4 +1,5 @@
 using CanMonitor.Application.Can;
+using CanMonitor.Application.Services;
 using CanMonitor.Application.Testing;
 using CanMonitor.Core.Abstractions;
 using CanMonitor.Core.Models;
@@ -42,8 +43,14 @@ public sealed class ServiceCollectionExtensionsTests
         provider.GetRequiredService<IAlarmEngine>().Should().NotBeNull();
         provider.GetRequiredService<ITxScheduler>().Should().NotBeNull();
         provider.GetRequiredService<CanTransmitService>().Should().NotBeNull();
+        provider.GetRequiredService<IVirtualInputService>().Should().NotBeNull();
+        provider.GetRequiredService<BusLifecycleService>().Should().NotBeNull();
 
-        provider.GetServices<IStepExecutor>().Should().HaveCount(6);
+        var providers = provider.GetServices<IBusHeartbeatProvider>().ToArray();
+        providers.Should().HaveCount(2);
+        providers.Select(p => p.Name).Should().BeEquivalentTo(new[] { "EEC1", "VirtualInput" });
+
+        provider.GetServices<IStepExecutor>().Should().HaveCount(10);
         provider.GetRequiredService<ITestRunner>().Should().NotBeNull();
     }
 }
