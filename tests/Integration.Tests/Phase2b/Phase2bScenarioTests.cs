@@ -14,6 +14,9 @@ namespace CanMonitor.Integration.Tests.Phase2b;
 
 public sealed class Phase2bScenarioTests
 {
+    private static string Confirmed(string name) =>
+        Path.Combine(AppContext.BaseDirectory, "confirmed", name);
+
     [Fact]
     public async Task TC024_EEC1_timeout_is_observed_after_heartbeat_disabled_and_tcu_reports()
     {
@@ -21,7 +24,7 @@ public sealed class Phase2bScenarioTests
         await bus.OpenAsync(new CanBusOptions());
 
         var dbcProvider = new DbcParserLibProvider();
-        await dbcProvider.LoadAsync("confirmed/120HP_NoPto.dbc");
+        await dbcProvider.LoadAsync(Confirmed("120HP_NoPto.dbc"));
         var decoder = new SignalDecoder(dbcProvider);
 
         var alarm = new AlarmEngine(Array.Empty<IAlarmRule>());
