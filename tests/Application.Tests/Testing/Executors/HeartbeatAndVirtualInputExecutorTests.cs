@@ -32,4 +32,53 @@ public sealed class HeartbeatAndVirtualInputExecutorTests
             new SetHeartbeatStep("Unknown", true), context: null!, CancellationToken.None);
         outcome.Should().Be(StepOutcome.Failed);
     }
+
+    [Fact]
+    public async Task SetVirtualInput_applies_supplied_fields_only()
+    {
+        using var svc = new VirtualInputService();
+        svc.Update(new VirtualInputState(ClutchPedalPercent: 30));
+        var exec = new SetVirtualInputStepExecutor(svc);
+
+        var outcome = await exec.ExecuteAsync(
+            new SetVirtualInputStep(GearLever: "Neutral", PtoSwitch: true),
+            context: null!, CancellationToken.None);
+
+        outcome.Should().Be(StepOutcome.Passed);
+        svc.Current.GearLever.Should().Be(GearLever.Neutral);
+        svc.Current.PtoSwitch.Should().BeTrue();
+        svc.Current.ClutchPedalPercent.Should().Be(30); // unchanged
+    }
+
+    [Theory]
+    [InlineData("None",    GearLever.None)]
+    [InlineData("Neutral", GearLever.Neutral)]
+    [InlineData("Forward", GearLever.Forward)]
+    [InlineData("Reverse", GearLever.Reverse)]
+    [InlineData("N",       GearLever.Neutral)] // short alias
+    [InlineData("F",       GearLever.Forward)]
+    [InlineData("R",       GearLever.Reverse)]
+    public async Task SetVirtualInput_parses_gear_lever_strings(string input, GearLever expected)
+    {
+        using var svc = new VirtualInputService();
+        var exec = new SetVirtualInputStepExecutor(svc);
+
+        var outcome = await exec.ExecuteAsync(
+            new SetVirtualInputStep(GearLever: input), context: null!, CancellationToken.None);
+
+        outcome.Should().Be(StepOutcome.Passed);
+        svc.Current.GearLever.Should().Be(expected);
+    }
+
+    [Fact]
+    public async Task SetVirtualInput_fails_on_unknown_gear_lever()
+    {
+        using var svc = new VirtualInputService();
+        var exec = new SetVirtualInputStepExecutor(svc);
+
+        var outcome = await exec.ExecuteAsync(
+            new SetVirtualInputStep(GearLever: "Banana"), context: null!, CancellationToken.None);
+
+        outcome.Should().Be(StepOutcome.Failed);
+    }
 }
