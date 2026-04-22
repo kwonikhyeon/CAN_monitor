@@ -38,7 +38,7 @@ public partial class App : WpfApplication
     {
         services
             .AddCanMonitorApplication()
-            .AddSingleton<IScheduler>(_ => System.Reactive.Concurrency.Scheduler.Default)
+            .AddSingleton<IScheduler>(_ => new DispatcherScheduler(WpfApplication.Current.Dispatcher))
             .AddSingleton<IDbcProvider, DbcParserLibProvider>()
             .AddSingleton<Wpf.Infrastructure.ICanBusFactory, CanBusFactory>()
             .AddSingleton<ShellWindow>()
