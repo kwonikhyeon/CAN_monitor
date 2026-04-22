@@ -81,4 +81,36 @@ public sealed class HeartbeatAndVirtualInputExecutorTests
 
         outcome.Should().Be(StepOutcome.Failed);
     }
+
+    [Fact]
+    public async Task EnterSimulationMode_activates_flag_and_enables_heartbeat()
+    {
+        using var svc = new VirtualInputService();
+        using var vi = new VirtualInputHeartbeat(svc);
+        var exec = new EnterSimulationModeStepExecutor(svc, new IBusHeartbeatProvider[] { vi });
+
+        var outcome = await exec.ExecuteAsync(
+            new EnterSimulationModeStep(), context: null!, CancellationToken.None);
+
+        outcome.Should().Be(StepOutcome.Passed);
+        svc.IsSimulationModeActive.Should().BeTrue();
+        vi.Enabled.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ExitSimulationMode_deactivates_flag_and_disables_heartbeat()
+    {
+        using var svc = new VirtualInputService();
+        using var vi = new VirtualInputHeartbeat(svc);
+        await svc.EnterSimulationModeAsync();
+        vi.SetEnabled(true);
+
+        var exec = new ExitSimulationModeStepExecutor(svc, new IBusHeartbeatProvider[] { vi });
+        var outcome = await exec.ExecuteAsync(
+            new ExitSimulationModeStep(), context: null!, CancellationToken.None);
+
+        outcome.Should().Be(StepOutcome.Passed);
+        svc.IsSimulationModeActive.Should().BeFalse();
+        vi.Enabled.Should().BeFalse();
+    }
 }
