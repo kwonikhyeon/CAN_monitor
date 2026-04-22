@@ -60,6 +60,22 @@ public sealed class VirtualInputExperimentalDbcTests
         Tuple(msg, "SpeedSensor2").Should().Be((48, 16, true));
     }
 
+    [Fact]
+    public async Task Motorola_variant_VAL_matches_Core_enums()
+    {
+        var sut = new DbcParserLibProvider();
+        await sut.LoadAsync(Experimental("virtual_input.motorola.dbc"));
+        var msg = sut.Current.MessagesById[VirtualInputFrameId];
+
+        var gear = msg.Signals.Single(s => s.Name == "GearLever");
+        gear.ValueTable.Should().Contain(0, "None").And.Contain(1, "Neutral")
+            .And.Contain(2, "Forward").And.Contain(3, "Reverse");
+
+        var range = msg.Signals.Single(s => s.Name == "RangeShift");
+        range.ValueTable.Should().Contain(0, "None").And.Contain(1, "First")
+            .And.Contain(2, "Second").And.Contain(3, "Third");
+    }
+
     private static (int StartBit, int Length, bool LittleEndian) Tuple(DbcMessage msg, string name)
     {
         var s = msg.Signals.Single(x => x.Name == name);
