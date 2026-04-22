@@ -1,6 +1,6 @@
 # Phase 2b Preparation Notes
 
-Status: **Q1/Q3 확정 (2026-04-22, 문서·자가정의 기반)**
+Status: **Q1/Q3 확정, Phase 2b 구현 완료 (2026-04-22)**
 
 Phase 2a 완료(commit cc71e6b) 이후, Q1(EEC1 payload)/Q3(virtual-input) 해제를 위한 선행 의사결정과 실험 산출물을 기록한다. 모두 문서 추정/자가 정의 기반이며, 제조사 공식 답변 수신 시 교체 필요.
 
@@ -154,3 +154,26 @@ Q1 payload가 현장 캡처로 확인되면:
 - **EL0601_EEC1_Timeout (Byte=3, Bit=1)**: 이 신호는 TCU→Display 방향(TCU=Tx)이므로 Phase 2a Alarms 엔진이 소비. EEC1 하트비트(Phase 2b) 송신과는 역방향. 혼동 금지.
 - **Q2 Operating Mode 전환 방법 미해결**: TCU를 Simulation Mode(0001b)로 진입시키는 PC 측 명령 메시지 미상. Q3 VirtualInput 송출만으로 TCU가 자동 전환하는지 미검증. 현장 확인 필요.
 - **GenMsgCycleTime 속성 의도적 생략**: `BA_DEF_` 선언 강제가 번거롭고, 주기는 provider 코드에서 결정되므로 주석으로 충분.
+
+---
+
+## Implementation Notes (2026-04-22)
+
+구현 파일 (단일 commit 범위 아님 — 한 task = 한 commit):
+- `src/Application/Can/Eec1HeartbeatProvider.cs`
+- `src/Application/Can/VirtualInputHeartbeat.cs`
+- `src/Application/Can/BusLifecycleService.cs`
+- `src/Application/Services/VirtualInputService.cs`
+- `src/Application/Testing/Executors/SetHeartbeatStepExecutor.cs`
+- `src/Application/Testing/Executors/SetVirtualInputStepExecutor.cs`
+- `src/Application/Testing/Executors/EnterSimulationModeStepExecutor.cs`
+- `src/Application/Testing/Executors/ExitSimulationModeStepExecutor.cs`
+
+의도적으로 단순화한 항목:
+- `VirtualInputHeartbeat`는 Motorola 인코딩만 내장. Intel이 필요해지면 `Options.ByteOrder`로 분기 추가.
+- `VirtualInputState.WheelSpeedKph`는 8-byte bitmap에 포함되지 않음 — UI/내부 상태 용도만, 필요 시 DBC/encoder 양쪽 확장.
+- EEC1 Timeout 알람은 AlarmEngine rule로 구현하지 않음. TCU가 직접 `EL0601` 비트를 송출하므로 `ObserveBitStep`로 관찰 충분.
+
+향후 Simulator 모듈에서 확장:
+- TC-004~009, 011~012, 017, 020, 025 자동화
+- EL0601 실제 TCU 감지 로직 (10초 타임아웃) 시뮬레이션

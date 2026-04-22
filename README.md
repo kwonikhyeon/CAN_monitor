@@ -2,7 +2,7 @@
 
 PC-side CAN bus monitor, emulator, and jig test runner for tractor TCU (변속제어기).
 
-Status: **Phase 2a (Application) 완료, Q1/Q3 해제 준비** — Phase 2a 파이프라인·Test DSL·TC-001/002/010/024 자동화 완료. Q1(EEC1 payload)/Q3(VirtualInput) 실험용 DBC는 `dbc/experimental/`에 Motorola/Intel 양쪽 변종으로 작성됨 (문서 추정·자가 정의 기반, 현장 캡처 시 교체). Phase 2b (EEC1 heartbeat + VirtualInput 구현) 착수 가능.
+Status: **Phase 2b (Heartbeat + VirtualInput) 완료** — Eec1HeartbeatProvider / VirtualInputHeartbeat / VirtualInputService / BusLifecycleService + 4 new step executors + TC-024/TC-003 integration 자동화. TC-004~009/011~012/017/020/025 자동화는 후속(Simulator 구현과 병행).
 
 - Spec: [`docs/superpowers/specs/2026-04-20-can-monitor-design.md`](docs/superpowers/specs/2026-04-20-can-monitor-design.md)
 - Phase 1 plan: [`docs/superpowers/plans/2026-04-21-phase1-foundation.md`](docs/superpowers/plans/2026-04-21-phase1-foundation.md)
