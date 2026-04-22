@@ -1,0 +1,63 @@
+VERSION ""
+
+
+NS_ :
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_:
+
+
+BO_ 2566869120 VirtualInput: 8 Vector__XXX
+ SG_ SpeedSensor2 : 55|16@0+ (1,0) [0|65535] "RPM" Vector__XXX
+ SG_ SpeedSensor1 : 39|16@0+ (1,0) [0|65535] "RPM" Vector__XXX
+ SG_ PedalVoltage : 31|8@0+ (1,0) [0|255] "" Vector__XXX
+ SG_ PedalPercent : 23|8@0+ (1,0) [0|100] "%" Vector__XXX
+ SG_ ParkingSwitch : 11|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ InchingSwitch : 10|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ FourWdSwitch : 9|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ PtoSwitch : 8|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ TempSwitch : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ RangeShift : 3|2@0+ (1,0) [0|3] "" Vector__XXX
+ SG_ GearLever : 1|2@0+ (1,0) [0|3] "" Vector__XXX
+
+
+
+CM_ BO_ 2566869120 "Q3-self-defined. Extended CAN ID 0x18FF5080 (J1939 Proprietary B, PGN 0xFF50, SA 0x80). PC->TCU virtual input for Simulation Mode (Operating Mode 0001b). Heartbeat period 50ms (provider enforced). Motorola @0+ variant. Real TCU may not accept this ID; effective only in Simulator/VirtualCanBus.";
+CM_ SG_ 2566869120 GearLever "Byte 0 bits 1..0. Motorola start=1 = signal MSB. Excel reference: see Virtual Input (self-defined).";
+CM_ SG_ 2566869120 RangeShift "Byte 0 bits 3..2. Motorola start=3 = signal MSB.";
+CM_ SG_ 2566869120 PedalPercent "Byte 2. Motorola start=23 = Byte 2 bit 7 (signal MSB). Unit percent, 0..100.";
+CM_ SG_ 2566869120 PedalVoltage "Byte 3. Raw ADC 0..255 (no scaling).";
+CM_ SG_ 2566869120 SpeedSensor1 "Bytes 4~5 big-endian. Motorola start=39 = Byte 4 bit 7 (signal MSB). Unit RPM, 0..65535.";
+CM_ SG_ 2566869120 SpeedSensor2 "Bytes 6~7 big-endian. Motorola start=55 = Byte 6 bit 7 (signal MSB). Unit RPM, 0..65535.";
+
+VAL_ 2566869120 GearLever 0 "Neutral" 1 "Forward" 2 "Reverse" ;
+VAL_ 2566869120 RangeShift 0 "Neutral" 1 "First" 2 "Second" 3 "Third" ;
