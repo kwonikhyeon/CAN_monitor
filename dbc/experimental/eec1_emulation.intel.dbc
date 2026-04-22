@@ -1,0 +1,50 @@
+VERSION ""
+
+
+NS_ :
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_:
+
+
+BO_ 2565866519 EEC1: 8 Vector__XXX
+ SG_ EEC1_High : 4|4@1+ (1,0) [0|10] "" Vector__XXX
+ SG_ EEC1_Low : 0|4@1+ (1,0) [0|10] "" Vector__XXX
+
+
+
+CM_ BO_ 2565866519 "Extended CAN ID 0x18F00417. Heartbeat period 100ms (provider enforced). Q1-pending payload, Intel @1+ variant.";
+CM_ SG_ 2565866519 EEC1_High "High nibble of Byte 0 (bits 7..4). Intel start=4 = signal LSB (matches Excel Bit=4). PSV driver fault code. Q1-pending.";
+CM_ SG_ 2565866519 EEC1_Low "Low nibble of Byte 0 (bits 3..0). Intel start=0 = signal LSB. PSV driver fault code. Q1-pending.";
+
+VAL_ 2565866519 EEC1_High 0 "No Failure" 1 "Short to GND" 2 "Short to Battery" 3 "Open load" 4 "PSV Short to GND" 5 "PSV Short to Battery" 6 "PSV Deviation" 7 "PSV Emergency stop" 8 "PSV Invalid parameter" 9 "PSV Short battery or internal SC" 10 "PSV Short battery or open or internal SC" ;
+VAL_ 2565866519 EEC1_Low 0 "No Failure" 1 "Short to GND" 2 "Short to Battery" 3 "Open load" 4 "PSV Short to GND" 5 "PSV Short to Battery" 6 "PSV Deviation" 7 "PSV Emergency stop" 8 "PSV Invalid parameter" 9 "PSV Short battery or internal SC" 10 "PSV Short battery or open or internal SC" ;

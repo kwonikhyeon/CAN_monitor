@@ -31,6 +31,9 @@
     <None Include="..\..\dbc\confirmed\*.dbc" Link="confirmed\%(FileName)%(Extension)">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\dbc\experimental\*.dbc" Link="experimental\%(FileName)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
