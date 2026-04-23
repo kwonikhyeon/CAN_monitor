@@ -88,10 +88,10 @@
                         <Setter Property="Margin" Value="0,0,18,0"/>
                     </Style>
                 </StackPanel.Resources>
-                <TextBlock>
-                    <Run Text="●" Foreground="{DynamicResource LedConnectedBrush}"/>
-                    <Run Text="{Binding Session}"/>
-                </TextBlock>
+                <StackPanel Orientation="Horizontal">
+                    <ctrl:LedIndicator State="{Binding Session}" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                    <TextBlock Text="{Binding Session}" VerticalAlignment="Center"/>
+                </StackPanel>
                 <TextBlock Text="{Binding RxPerSecond, StringFormat='Rx {0}/s'}"/>
                 <TextBlock Text="{Binding TxPerSecond, StringFormat='Tx {0}/s'}"/>
                 <TextBlock Text="{Binding DroppedFrames, StringFormat='Drop {0}'}"/>
