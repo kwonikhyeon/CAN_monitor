@@ -40,6 +40,7 @@ public partial class App : WpfApplication
             .AddCanMonitorApplication()
             .AddSingleton<IScheduler>(_ => new DispatcherScheduler(WpfApplication.Current.Dispatcher))
             .AddSingleton<IDbcProvider, DbcParserLibProvider>()
+            .AddSingleton<ISignalDecoder, SignalDecoder>()
             .AddSingleton<Wpf.Infrastructure.ICanBusFactory, CanBusFactory>()
             .AddSingleton<ShellWindow>()
             .AddSingleton<ShellViewModel>()

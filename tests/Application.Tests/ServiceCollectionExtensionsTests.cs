@@ -43,10 +43,8 @@ public sealed class ServiceCollectionExtensionsTests
         provider.GetRequiredService<RawFrameStore>().Should().NotBeNull();
         provider.GetRequiredService<ManualBusStatusPublisher>().Should().NotBeNull();
         provider.GetRequiredService<IAlarmEngine>().Should().NotBeNull();
-        provider.GetRequiredService<ITxScheduler>().Should().NotBeNull();
         provider.GetRequiredService<CanTransmitService>().Should().NotBeNull();
         provider.GetRequiredService<IVirtualInputService>().Should().NotBeNull();
-        provider.GetRequiredService<BusLifecycleService>().Should().NotBeNull();
 
         var providers = provider.GetServices<IBusHeartbeatProvider>().ToArray();
         providers.Should().HaveCount(2);

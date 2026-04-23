@@ -17,7 +17,6 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ManualBusStatusPublisher>();
 
         services.AddSingleton<IAlarmEngine>(_ => new AlarmEngine(Array.Empty<IAlarmRule>()));
-        services.AddSingleton<ITxScheduler, TxScheduler>();
         services.AddSingleton<CanTransmitService>();
 
         services.AddSingleton<IVirtualInputService, VirtualInputService>();
@@ -26,8 +25,6 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<VirtualInputHeartbeat>();
         services.AddSingleton<IBusHeartbeatProvider>(sp => sp.GetRequiredService<Eec1HeartbeatProvider>());
         services.AddSingleton<IBusHeartbeatProvider>(sp => sp.GetRequiredService<VirtualInputHeartbeat>());
-
-        services.AddSingleton<BusLifecycleService>();
 
         services.AddSingleton<IStepExecutor, WaitStepExecutor>();
         services.AddSingleton<IStepExecutor, SendCanFrameStepExecutor>();
