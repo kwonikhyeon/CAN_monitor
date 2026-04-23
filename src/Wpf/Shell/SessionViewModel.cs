@@ -142,7 +142,7 @@ public sealed partial class SessionViewModel : ObservableObject, ISessionState, 
     }
 
     [RelayCommand]
-    private Task DisconnectCommandImpl() => DisconnectAsync();
+    private Task Disconnect() => DisconnectAsync();
 
     public async Task DisconnectAsync()
     {
