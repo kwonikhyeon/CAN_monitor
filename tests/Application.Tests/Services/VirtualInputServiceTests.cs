@@ -37,7 +37,7 @@ public sealed class VirtualInputServiceTests
         sut.Update(next);
 
         sut.Current.Should().Be(next);
-        seen.Should().HaveCountGreaterOrEqualTo(2); // BehaviorSubject replays initial + next
+        seen.Should().HaveCountGreaterOrEqualTo(2); // BehaviorSubject 가 초기값 + 다음값 재방출
         seen.Last().Should().Be(next);
     }
 }

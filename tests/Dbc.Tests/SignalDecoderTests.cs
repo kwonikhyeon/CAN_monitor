@@ -26,7 +26,7 @@ public sealed class SignalDecoderTests
         new(Id: 0x100, IsExtended: false, Name: "M", Dlc: 8,
             Signals: signals.ToImmutableArray(), CycleTime: null);
 
-    // ---- Unknown-id handling ----
+    // ---- 알 수 없는 ID 처리 ----
 
     [Fact]
     public void Decode_unknown_message_returns_empty()
@@ -38,7 +38,7 @@ public sealed class SignalDecoderTests
         result.Should().BeEmpty();
     }
 
-    // ---- Intel (little-endian) ----
+    // ---- Intel (리틀 엔디언) ----
 
     [Fact]
     public void Intel_8bit_signal_at_byte0()
@@ -55,7 +55,7 @@ public sealed class SignalDecoderTests
     [Fact]
     public void Intel_16bit_signal_crossing_byte_boundary()
     {
-        // Start bit 0, length 16, little-endian => bytes[0] low, bytes[1] high
+        // start bit 0, length 16, 리틀 엔디언 → bytes[0] 저위, bytes[1] 고위
         var sig = new DbcSignal("A", 0, 16, true, false, 1, 0, 0, 65535, null, null);
         var sut = new SignalDecoder(new FakeDbcProvider(new DbcDatabase(new[] { Msg(sig) })));
 
@@ -63,7 +63,7 @@ public sealed class SignalDecoderTests
         r[0].RawValue.Should().Be(0x1234);
     }
 
-    // ---- Motorola (big-endian, @0+) ----
+    // ---- Motorola (빅 엔디언, @0+) ----
 
     [Fact]
     public void Motorola_8bit_signal_at_msb_of_byte0()
@@ -79,8 +79,8 @@ public sealed class SignalDecoderTests
     [Fact]
     public void Motorola_16bit_signal_crossing_byte_boundary()
     {
-        // High byte in byte[0] MSB-aligned, low byte in byte[1].
-        // DBC start bit for Motorola @0+ is the MSB position; 7=MSB of byte 0.
+        // 고위 바이트는 byte[0] 의 MSB 정렬, 저위 바이트는 byte[1].
+        // DBC 의 Motorola @0+ start bit 는 MSB 위치 — 7 = byte 0 의 MSB.
         var sig = new DbcSignal("A", StartBit: 7, Length: 16, LittleEndian: false, IsSigned: false,
             Factor: 1, Offset: 0, Minimum: 0, Maximum: 65535, Unit: null, ValueTable: null);
         var sut = new SignalDecoder(new FakeDbcProvider(new DbcDatabase(new[] { Msg(sig) })));
@@ -89,7 +89,7 @@ public sealed class SignalDecoderTests
         r[0].RawValue.Should().Be(0x1234);
     }
 
-    // ---- Signed ----
+    // ---- 부호 있음 ----
 
     [Fact]
     public void Signed_negative_extracted_with_signextension()
@@ -101,7 +101,7 @@ public sealed class SignalDecoderTests
         r[0].RawValue.Should().Be(-1);
     }
 
-    // ---- Factor/offset ----
+    // ---- Factor/Offset ----
 
     [Fact]
     public void Applies_factor_and_offset_to_physical_value()
@@ -112,11 +112,11 @@ public sealed class SignalDecoderTests
 
         var r = sut.Decode(FrameWith(100, 0, 0, 0, 0, 0, 0, 0));
         r[0].RawValue.Should().Be(100);
-        r[0].PhysicalValue.Should().Be(10.0);                // 100 * 0.5 + -40
+        r[0].PhysicalValue.Should().Be(10.0);                // 100 * 0.5 + (-40)
         r[0].Unit.Should().Be("degC");
     }
 
-    // ---- Snapshot capture semantics ----
+    // ---- 스냅샷 캡처 시맨틱 ----
 
     [Fact]
     public void Captures_snapshot_at_decode_start()

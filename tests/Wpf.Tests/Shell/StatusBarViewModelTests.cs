@@ -63,7 +63,7 @@ public class StatusBarViewModelTests
         var hub = new CanEventHub();
         var store = new RawFrameStore(capacity: 1);
         store.Record(MakeFrame(CanDirection.Rx));
-        store.Record(MakeFrame(CanDirection.Rx));  // drops 1
+        store.Record(MakeFrame(CanDirection.Rx));  // 1 건 드롭
         var alarms = new FakeAlarmEngine();
         var session = new FakeSessionState();
 

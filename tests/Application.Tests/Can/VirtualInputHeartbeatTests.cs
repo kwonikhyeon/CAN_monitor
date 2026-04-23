@@ -31,8 +31,8 @@ public sealed class VirtualInputHeartbeatTests
         using var sut = new VirtualInputHeartbeat(svc);
 
         svc.Update(new VirtualInputState(
-            GearLever: GearLever.Forward,       // 2
-            RangeShift: RangeShift.Second,      // 2
+            GearLever: GearLever.Forward,       // 값 2
+            RangeShift: RangeShift.Second,      // 값 2
             TemperatureSwitch: true,
             ClutchPedalPercent: 75,
             PtoSwitch: true,
@@ -42,7 +42,7 @@ public sealed class VirtualInputHeartbeatTests
 
         var data = sut.BuildFrame().Data.Span;
 
-        // Byte 0 = 0b_0001_1010: TempSwitch(bit4)=1, RangeShift(bits3..2)=10, GearLever(bits1..0)=10
+        // Byte 0 = 0b_0001_1010: TempSwitch(bit4)=1, RangeShift(비트 3..2)=10, GearLever(비트 1..0)=10
         data[0].Should().Be(0b0001_1010);
 
         // Byte 1 = 0b_0000_0101: Parking=0(bit3), Inching=1(bit2), FourWd=0(bit1), Pto=1(bit0)
@@ -58,7 +58,7 @@ public sealed class VirtualInputHeartbeatTests
         using var sut = new VirtualInputHeartbeat(svc);
 
         svc.Update(new VirtualInputState(
-            SpeedSensor1Rpm: 2500,  // 0x09C4
+            SpeedSensor1Rpm: 2500,    // 0x09C4
             SpeedSensor2Rpm: 45000)); // 0xAFC8
 
         var data = sut.BuildFrame().Data.Span;
@@ -73,8 +73,8 @@ public sealed class VirtualInputHeartbeatTests
         using var sut = new VirtualInputHeartbeat(svc);
 
         svc.Update(new VirtualInputState(
-            ClutchPedalPercent: 500,   // >100 → clamp 100
-            SpeedSensor1Rpm: 99999));  // > 65535 → clamp 65535
+            ClutchPedalPercent: 500,   // >100 → 100 으로 클램프
+            SpeedSensor1Rpm: 99999));  // >65535 → 65535 로 클램프
 
         var data = sut.BuildFrame().Data.Span;
         data[2].Should().Be(100);

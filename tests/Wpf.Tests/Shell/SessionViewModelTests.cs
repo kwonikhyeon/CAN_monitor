@@ -133,7 +133,7 @@ public class SessionViewModelTests
         await vm.DisconnectAsync();
         vm.State.Should().Be(ConnectionState.Disconnected);
 
-        await vm.DisconnectAsync();  // second call must be no-op
+        await vm.DisconnectAsync();  // 두 번째 호출은 no-op 이어야 함
         vm.State.Should().Be(ConnectionState.Disconnected);
     }
 
@@ -158,7 +158,7 @@ public class SessionViewModelTests
         await vm.DisconnectAsync();
 
         emitted.Should().ContainInOrder(
-            ConnectionState.Disconnected,  // BehaviorSubject replay
+            ConnectionState.Disconnected,  // BehaviorSubject 재방출
             ConnectionState.Connecting,
             ConnectionState.Connected,
             ConnectionState.Disconnected);

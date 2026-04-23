@@ -35,9 +35,9 @@ public sealed class VirtualInputHeartbeat : IBusHeartbeatProvider, IDisposable
         var buf = new byte[8];
 
         byte byte0 = 0;
-        byte0 |= (byte)((int)s.GearLever & 0x03);                // bits 1..0
-        byte0 |= (byte)(((int)s.RangeShift & 0x03) << 2);        // bits 3..2
-        if (s.TemperatureSwitch) byte0 |= 0b0001_0000;           // bit 4
+        byte0 |= (byte)((int)s.GearLever & 0x03);                // 비트 1..0
+        byte0 |= (byte)(((int)s.RangeShift & 0x03) << 2);        // 비트 3..2
+        if (s.TemperatureSwitch) byte0 |= 0b0001_0000;           // 비트 4
         buf[0] = byte0;
 
         byte byte1 = 0;
@@ -48,7 +48,7 @@ public sealed class VirtualInputHeartbeat : IBusHeartbeatProvider, IDisposable
         buf[1] = byte1;
 
         buf[2] = (byte)Math.Clamp((int)Math.Round(s.ClutchPedalPercent), 0, 100);
-        // buf[3] reserved
+        // buf[3] 은 예약 영역
 
         int s1 = Math.Clamp((int)Math.Round(s.SpeedSensor1Rpm), 0, ushort.MaxValue);
         buf[4] = (byte)((s1 >> 8) & 0xFF);
@@ -71,7 +71,7 @@ public sealed class VirtualInputHeartbeat : IBusHeartbeatProvider, IDisposable
         }
         catch (ObjectDisposedException)
         {
-            // Subject was already disposed
+            // Subject 가 이미 dispose 된 경우
         }
         _enabled.Dispose();
     }

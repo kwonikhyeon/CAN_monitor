@@ -30,7 +30,7 @@ public sealed class Phase2bScenarioTests
         var alarm = new AlarmEngine(Array.Empty<IAlarmRule>());
         var pipeline = new CanReceivePipeline(bus.Frames, decoder, alarm);
 
-        // Keep the pipeline hot by subscribing to it
+        // 파이프라인을 핫 상태로 유지하기 위해 구독
         using var pipelineSub = pipeline.DecodedSignals.Subscribe(_ => { });
 
         var eec1 = new Eec1HeartbeatProvider();
@@ -48,10 +48,10 @@ public sealed class Phase2bScenarioTests
         {
             while (!cts.IsCancellationRequested)
             {
-                // Alarms_0x200 frame with EEC1_Timeout (bit 25) set
-                // Motorola format: bit 25 = byte 3, bit 1 (0x02)
+                // EEC1_Timeout(bit 25)가 세트된 Alarms_0x200 프레임
+                // Motorola 형식: bit 25 = byte 3 의 bit 1 (0x02)
                 var data = new byte[8];
-                data[3] = 0x02; // Bit 25 set
+                data[3] = 0x02; // bit 25 세트
                 bus.Inject(new CanFrame(0x200, IsExtended: false, data, DateTimeOffset.UtcNow, CanDirection.Rx));
                 await Task.Delay(50);
             }

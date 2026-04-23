@@ -14,7 +14,7 @@ public sealed class HeartbeatAndVirtualInputExecutorTests
     [Fact]
     public async Task SetHeartbeat_toggles_matching_provider()
     {
-        using var eec1 = new Eec1HeartbeatProvider();   // starts Enabled=true
+        using var eec1 = new Eec1HeartbeatProvider();   // Enabled=true 로 시작
         var exec = new SetHeartbeatStepExecutor(new IBusHeartbeatProvider[] { eec1 });
 
         var outcome = await exec.ExecuteAsync(
@@ -47,7 +47,7 @@ public sealed class HeartbeatAndVirtualInputExecutorTests
         outcome.Should().Be(StepOutcome.Passed);
         svc.Current.GearLever.Should().Be(GearLever.Neutral);
         svc.Current.PtoSwitch.Should().BeTrue();
-        svc.Current.ClutchPedalPercent.Should().Be(30); // unchanged
+        svc.Current.ClutchPedalPercent.Should().Be(30); // 변경되지 않음
     }
 
     [Theory]
@@ -55,7 +55,7 @@ public sealed class HeartbeatAndVirtualInputExecutorTests
     [InlineData("Neutral", GearLever.Neutral)]
     [InlineData("Forward", GearLever.Forward)]
     [InlineData("Reverse", GearLever.Reverse)]
-    [InlineData("N",       GearLever.Neutral)] // short alias
+    [InlineData("N",       GearLever.Neutral)] // 단축 별칭
     [InlineData("F",       GearLever.Forward)]
     [InlineData("R",       GearLever.Reverse)]
     public async Task SetVirtualInput_parses_gear_lever_strings(string input, GearLever expected)

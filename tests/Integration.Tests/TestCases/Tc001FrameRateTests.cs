@@ -30,9 +30,9 @@ public sealed class Tc001FrameRateTests
             Prerequisites: Array.Empty<TestStep>(),
             Steps: new TestStep[] { new AssertFrameRateStep(0x0CF00400, 100, TolerancePct: 20) });
 
-        // Deterministic injection: start runner (executor subscribes synchronously before first await),
-        // then inject 100 frames synchronously so they all land in the first Buffer(1s) window.
-        // Avoids Windows timer-granularity flakiness (see AssertFrameRateStepExecutorTests fix).
+        // 결정적 주입: 러너를 먼저 시작 (executor 가 첫 await 이전에 동기적으로 구독),
+        // 이후 100 프레임을 동기적으로 주입해 모두 첫 Buffer(1s) 윈도우에 떨어지도록 한다.
+        // Windows 타이머 분해능에 의한 flaky 문제 회피 (AssertFrameRateStepExecutorTests 수정 참조).
         var runTask = runner.RunAsync(testCase);
         for (int i = 0; i < 100; i++)
             bus.Inject(new CanFrame(0x0CF00400, true, new byte[] { 1 }, DateTimeOffset.UtcNow, CanDirection.Rx));

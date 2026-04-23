@@ -47,7 +47,7 @@ public partial class App : WpfApplication
             .AddSingleton<ISessionState>(sp => sp.GetRequiredService<SessionViewModel>())
             .AddSingleton<StatusBarViewModel>()
             .AddSingleton<DashboardViewModel>()
-            .AddSingleton<INavTarget, DashboardNavTarget>()                                         // Order=10
+            .AddSingleton<INavTarget, DashboardNavTarget>()                                         // Order=10 (최상단)
             .AddSingleton<INavTarget>(_ => new PlaceholderNavTarget("Raw",       "\uE8FD", "Raw Log",         20))
             .AddSingleton<INavTarget>(_ => new PlaceholderNavTarget("Transmit",  "\uE724", "Transmit",        30))
             .AddSingleton<INavTarget>(_ => new PlaceholderNavTarget("Test",      "\uE90F", "Test Runner",     40))
@@ -66,7 +66,14 @@ public partial class App : WpfApplication
             try
             {
                 var session = _host.Services.GetRequiredService<SessionViewModel>();
-                await session.DisconnectAsync();
+                try
+                {
+                    await session.DisconnectAsync();
+                }
+                catch
+                {
+                    // DisconnectAsync 실패가 Host 정리를 막지 않도록 흡수한다.
+                }
             }
             finally
             {

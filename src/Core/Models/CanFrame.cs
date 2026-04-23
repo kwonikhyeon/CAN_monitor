@@ -1,9 +1,9 @@
 namespace CanMonitor.Core.Models;
 
 /// <summary>
-/// Immutable CAN frame. <c>Data</c> MUST point to an independently owned buffer —
-/// never wrap a driver's reusable/pooled native buffer. Frame producers (ICanBus implementations)
-/// are responsible for copying payload at ingress. See spec §5/§8.
+/// 불변 CAN 프레임. <c>Data</c> 는 반드시 독립적으로 소유된 버퍼를 가리켜야 한다 —
+/// 드라이버의 재사용/풀링된 네이티브 버퍼를 감싸면 안 된다. 프레임 생성자
+/// (ICanBus 구현체) 가 진입 시점에 payload 를 복사할 책임을 진다. 스펙 §5/§8 참조.
 /// </summary>
 public readonly record struct CanFrame(
     uint Id,

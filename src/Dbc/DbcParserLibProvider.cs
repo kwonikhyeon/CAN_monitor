@@ -27,7 +27,7 @@ public sealed class DbcParserLibProvider : IDbcProvider
 
     public Task SaveAsync(string path, CancellationToken ct = default)
     {
-        // Save is part of DBC editor (feature H) — deferred.
+        // Save는 DBC 에디터(feature H)의 일부 — 현재 단계에서는 미구현.
         throw new NotSupportedException("DBC save is part of feature H (Phase 3+).");
     }
 
@@ -45,7 +45,7 @@ public sealed class DbcParserLibProvider : IDbcProvider
         var signals = m.Signals.Select(ConvertSignal).ToImmutableArray();
 
         TimeSpan? cycle = null;
-        // Try the CycleTime method if it exists
+        // CycleTime 메서드가 존재하면 값을 시도 취득.
         if (m.CycleTime(out var cycleMs) && cycleMs > 0)
             cycle = TimeSpan.FromMilliseconds(cycleMs);
 
@@ -73,7 +73,7 @@ public sealed class DbcParserLibProvider : IDbcProvider
             Name:         s.Name,
             StartBit:     (int)s.StartBit,
             Length:       (int)s.Length,
-            LittleEndian: s.ByteOrder == 1,          // DbcParserLib: 1 = Intel, 0 = Motorola
+            LittleEndian: s.ByteOrder == 1,          // DbcParserLib 규약: 1 = Intel, 0 = Motorola
             IsSigned:     s.ValueType == DbcValueType.Signed,
             Factor:       s.Factor,
             Offset:       s.Offset,

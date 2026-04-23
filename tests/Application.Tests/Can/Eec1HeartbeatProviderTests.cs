@@ -53,12 +53,12 @@ public sealed class Eec1HeartbeatProviderTests
         var changes = new List<bool>();
         using var _ = sut.EnabledChanges.Subscribe(changes.Add);
 
-        sut.SetEnabled(true);   // no-op, already true
+        sut.SetEnabled(true);   // no-op, 이미 true
         sut.SetEnabled(false);
         sut.SetEnabled(false);  // no-op
         sut.SetEnabled(true);
 
         await Task.Delay(10);
-        changes.Should().Equal(true, false, true);  // BehaviorSubject replays current
+        changes.Should().Equal(true, false, true);  // BehaviorSubject 가 현재값 재방출
     }
 }

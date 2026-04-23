@@ -47,7 +47,7 @@ public sealed class Eec1HeartbeatProvider : IBusHeartbeatProvider, IDisposable
         }
         catch (ObjectDisposedException)
         {
-            // Subject was already disposed
+            // Subject 가 이미 dispose 된 경우
         }
         _enabled.Dispose();
     }

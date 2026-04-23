@@ -10,7 +10,7 @@ public sealed class SignalDecoder : ISignalDecoder
 
     public IReadOnlyList<SignalValue> Decode(CanFrame frame)
     {
-        var db = _dbc.Current;                                // capture snapshot at start
+        var db = _dbc.Current;                                // 시작 시점의 스냅샷을 캡처
         if (!db.MessagesById.TryGetValue(frame.Id, out var msg))
             return Array.Empty<SignalValue>();
 

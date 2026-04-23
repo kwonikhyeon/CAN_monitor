@@ -70,7 +70,7 @@ public sealed class CanBusBaseTests
         var mutableBuffer = new byte[] { 0x11, 0x22, 0x33 };
         bus.InjectRxPublic(new CanFrame(0x100, false, mutableBuffer, DateTimeOffset.UtcNow, CanDirection.Rx));
 
-        // Mutate the caller's buffer AFTER publish — the subscriber must see unchanged bytes.
+        // 발행 이후 호출자 버퍼를 변조한다 — 구독자는 변경되지 않은 바이트를 관찰해야 한다.
         mutableBuffer[0] = 0xFF;
 
         captured.Should().ContainSingle();
@@ -104,7 +104,7 @@ public sealed class CanBusBaseTests
         using var _ = bus.Frames.Subscribe(_ => { }, () => completed = true);
 
         await bus.CloseAsync();
-        await bus.CloseAsync();                               // idempotent
+        await bus.CloseAsync();                               // 멱등
 
         bus.CloseCount.Should().Be(1);
         completed.Should().BeTrue();

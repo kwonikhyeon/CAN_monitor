@@ -4,9 +4,9 @@ using CanMonitor.Core.Models;
 namespace CanMonitor.Infrastructure.Can.Virtual;
 
 /// <summary>
-/// In-process loopback bus. Tests (and Phase 2/4 Simulator) inject frames
-/// via <see cref="Inject"/>; <see cref="CanBusBase.SendAsync"/> echoes them
-/// to subscribers with Direction=Tx automatically.
+/// 프로세스 내부 loopback bus. 테스트(와 Phase 2/4 시뮬레이터)는
+/// <see cref="Inject"/> 로 프레임을 주입하며, <see cref="CanBusBase.SendAsync"/>
+/// 는 이를 Direction=Tx 로 구독자에게 자동 echo 한다.
 /// </summary>
 public sealed class VirtualCanBus : CanBusBase
 {

@@ -27,7 +27,7 @@ public sealed class BusLifecycleServiceTests
         await Task.Delay(350);
         await scheduler.DrainForTestsAsync();
 
-        seen.Should().HaveCountGreaterOrEqualTo(2); // ~3 frames in 300ms at 100ms period
+        seen.Should().HaveCountGreaterOrEqualTo(2); // 100ms 주기로 300ms 동안 약 3 프레임
     }
 
     [Fact]
@@ -59,7 +59,7 @@ public sealed class BusLifecycleServiceTests
         await bus.OpenAsync(new CanBusOptions());
         await using var scheduler = new TxScheduler(bus);
         using var eec1 = new Eec1HeartbeatProvider();
-        eec1.SetEnabled(false); // start disabled
+        eec1.SetEnabled(false); // 비활성 상태로 시작
 
         await using var sut = new BusLifecycleService(new IBusHeartbeatProvider[] { eec1 }, scheduler);
         sut.Start();

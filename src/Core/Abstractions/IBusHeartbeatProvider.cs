@@ -3,9 +3,10 @@ using CanMonitor.Core.Models;
 namespace CanMonitor.Core.Abstractions;
 
 /// <summary>
-/// Periodic sender abstraction. Enabled state is read-only; mutation flows through
-/// <see cref="SetEnabled"/> so that <see cref="EnabledChanges"/> emits a single source
-/// of truth for UI and BusLifecycleService alike. See spec §6/§12.
+/// 주기적 송신자 추상화. Enabled 상태는 읽기 전용이며 변경은
+/// <see cref="SetEnabled"/> 를 통해 이루어진다. 이를 통해
+/// <see cref="EnabledChanges"/> 가 UI 와 BusLifecycleService 양쪽에 동일한
+/// 단일 진실원(source of truth)을 방출한다. 스펙 §6/§12 참조.
 /// </summary>
 public interface IBusHeartbeatProvider
 {

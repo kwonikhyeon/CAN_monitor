@@ -17,7 +17,7 @@ public sealed class FoundationSmokeTests
     [Fact(Timeout = 5000)]
     public async Task End_to_end_injected_frame_decodes_to_signal_values()
     {
-        // Arrange
+        // 준비
         var dbc = new DbcParserLibProvider();
         await dbc.LoadAsync(Confirmed("120HP_NoPto.dbc"));
         var decoder = new SignalDecoder(dbc);
@@ -35,17 +35,17 @@ public sealed class FoundationSmokeTests
                     decoded.Add(v);
             });
 
-        // Act — inject a frame matching 0x0C000E00 with Gear_Lever_N_Status=1.
-        // Gear_Lever_N_Status is Motorola @0+ with start bit 7 (MSB of byte 0),
-        // length 1. Setting byte 0 MSB => 0x80.
+        // 실행 — Gear_Lever_N_Status=1 인 0x0C000E00 프레임을 주입.
+        // Gear_Lever_N_Status 는 Motorola @0+, start bit 7(byte 0 의 MSB),
+        // length 1. byte 0 의 MSB 를 세트 → 0x80.
         var payload = new byte[] { 0x80, 0, 0, 0, 0, 0, 0, 0 };
         bus.Inject(new CanFrame(0x0C000E00, IsExtended: true, Data: payload,
             Timestamp: DateTimeOffset.UtcNow, Direction: CanDirection.Rx));
 
-        // Give the synchronized subject a beat to deliver.
+        // 동기화 Subject 가 배달할 시간을 잠시 부여.
         await Task.Delay(50);
 
-        // Assert
+        // 검증
         decoded.Should().NotBeEmpty();
         var neutralBit = decoded.Single(s => s.SignalName == "Gear_Lever_N_Status");
         neutralBit.RawValue.Should().Be(1);
