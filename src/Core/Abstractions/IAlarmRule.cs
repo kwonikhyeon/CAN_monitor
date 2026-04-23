@@ -1,6 +1,6 @@
 using CanMonitor.Core.Models;
 
-namespace CanMonitor.Application.Alarms;
+namespace CanMonitor.Core.Abstractions;
 
 public interface IAlarmRule
 {

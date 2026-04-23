@@ -27,6 +27,7 @@ public class StatusBarViewModelTests
         public IObservable<AlarmState> AlarmChanges => Changes;
         public IReadOnlyCollection<AlarmState> CurrentAlarms { get; set; } = Array.Empty<AlarmState>();
         public void Submit(SignalValue value) { }
+        public void ReplaceRules(IReadOnlyList<IAlarmRule> rules) { }
     }
 
     private static CanFrame MakeFrame(CanDirection dir)

@@ -7,4 +7,5 @@ public interface IAlarmEngine
     IObservable<AlarmState> AlarmChanges { get; }
     IReadOnlyCollection<AlarmState> CurrentAlarms { get; }
     void Submit(SignalValue value);
+    void ReplaceRules(IReadOnlyList<IAlarmRule> rules);
 }

@@ -1,4 +1,5 @@
 using CanMonitor.Application.Alarms;
+using CanMonitor.Core.Abstractions;
 using CanMonitor.Core.Models;
 using FluentAssertions;
 using Xunit;

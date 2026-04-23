@@ -1,3 +1,4 @@
+using CanMonitor.Core.Abstractions;
 using CanMonitor.Core.Models;
 
 namespace CanMonitor.Application.Alarms;

@@ -44,6 +44,7 @@ public class SessionViewModelTests
         public IObservable<AlarmState> AlarmChanges => Observable.Never<AlarmState>();
         public IReadOnlyCollection<AlarmState> CurrentAlarms => Array.Empty<AlarmState>();
         public void Submit(SignalValue value) { }
+        public void ReplaceRules(IReadOnlyList<IAlarmRule> rules) { }
     }
 
     private static SessionViewModel CreateVm(string rootDir, FakeDbcProvider dbc, CanBusFactory factory,
