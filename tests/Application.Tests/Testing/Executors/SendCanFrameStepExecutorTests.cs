@@ -5,6 +5,7 @@ using CanMonitor.Core.Models;
 using CanMonitor.Core.Testing;
 using CanMonitor.Infrastructure.Can.Virtual;
 using FluentAssertions;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Xunit;
 
@@ -15,6 +16,7 @@ public sealed class SendCanFrameStepExecutorTests
     private sealed class NoopDecoder : ISignalDecoder
     {
         public IReadOnlyList<SignalValue> Decode(CanFrame frame) => Array.Empty<SignalValue>();
+        public IObservable<CanFrame> UnknownFrames => Observable.Never<CanFrame>();
     }
 
     [Fact]

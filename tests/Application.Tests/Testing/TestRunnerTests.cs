@@ -45,6 +45,7 @@ public sealed class TestRunnerTests
     private sealed class NoopDecoder : ISignalDecoder
     {
         public IReadOnlyList<SignalValue> Decode(CanFrame frame) => Array.Empty<SignalValue>();
+        public IObservable<CanFrame> UnknownFrames => Observable.Never<CanFrame>();
     }
 
     private static TestCase Case(params TestStep[] steps) =>

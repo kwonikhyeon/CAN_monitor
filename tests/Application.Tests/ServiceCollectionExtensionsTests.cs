@@ -7,6 +7,7 @@ using CanMonitor.Core.Testing;
 using CanMonitor.Infrastructure.Can.Virtual;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Xunit;
 
@@ -17,6 +18,7 @@ public sealed class ServiceCollectionExtensionsTests
     private sealed class NoopDecoder : ISignalDecoder
     {
         public IReadOnlyList<SignalValue> Decode(CanFrame frame) => Array.Empty<SignalValue>();
+        public IObservable<CanFrame> UnknownFrames => Observable.Never<CanFrame>();
     }
 
     [Fact]

@@ -17,6 +17,7 @@ public sealed class CanReceivePipelineTests
         private readonly IReadOnlyList<SignalValue> _out;
         public FakeDecoder(IReadOnlyList<SignalValue> output) { _out = output; }
         public IReadOnlyList<SignalValue> Decode(CanFrame frame) => _out;
+        public IObservable<CanFrame> UnknownFrames => Observable.Never<CanFrame>();
     }
 
     private sealed class RecordingAlarm : IAlarmEngine
