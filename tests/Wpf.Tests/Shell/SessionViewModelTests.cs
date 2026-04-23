@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.IO;
 using System.Reactive.Linq;
 using CanMonitor.Application.Can;
@@ -23,7 +24,12 @@ public class SessionViewModelTests
         {
             LoadedPaths.Add(path);
             if (ShouldFail) throw new InvalidOperationException("fake failure");
-            Current = new DbcDatabase(Array.Empty<DbcMessage>());
+            // Alarms_0x200 메시지와 EEC1_Timeout 신호 생성
+            var msg = new DbcMessage(0x200, false, "Alarms_0x200", 8,
+                ImmutableArray.Create(
+                    new DbcSignal("EEC1_Timeout", 25, 1, false, false, 1, 0, 0, 1, null, null)),
+                null);
+            Current = new DbcDatabase(new[] { msg });
             DatabaseReplaced?.Invoke(this, Current);
             return Task.CompletedTask;
         }
@@ -47,10 +53,17 @@ public class SessionViewModelTests
         public void ReplaceRules(IReadOnlyList<IAlarmRule> rules) { }
     }
 
+    private sealed class FakeDecoder : ISignalDecoder
+    {
+        public IReadOnlyList<SignalValue> Decode(CanFrame frame) => Array.Empty<SignalValue>();
+        public IObservable<CanFrame> UnknownFrames => Observable.Never<CanFrame>();
+    }
+
     private static SessionViewModel CreateVm(string rootDir, FakeDbcProvider dbc, CanBusFactory factory,
         CanEventHub hub, ManualBusStatusPublisher publisher)
         => new SessionViewModel(factory, dbc, hub, publisher,
-            new FakeAlarmEngine(), Array.Empty<IBusHeartbeatProvider>(), rootDir);
+            new FakeAlarmEngine(), new FakeDecoder(),
+            Array.Empty<IBusHeartbeatProvider>(), rootDir);
 
     [Fact]
     public async Task InitializeAsync_loads_default_dbc_when_present()
