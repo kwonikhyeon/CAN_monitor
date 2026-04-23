@@ -37,3 +37,6 @@ logs/
 # Local-only (not part of repo)
 data/
 docs/superpowers/specs/
+
+# Superpowers brainstorm companion
+.superpowers/
