@@ -16,7 +16,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<RawFrameStore>();
         services.AddSingleton<ManualBusStatusPublisher>();
 
-        services.AddSingleton<IAlarmEngine>(_ => new AlarmEngine(AlarmRuleFactory.CreatePhase2aRules()));
+        services.AddSingleton<IAlarmEngine>(_ => new AlarmEngine(Array.Empty<IAlarmRule>()));
         services.AddSingleton<ITxScheduler, TxScheduler>();
         services.AddSingleton<CanTransmitService>();
 
