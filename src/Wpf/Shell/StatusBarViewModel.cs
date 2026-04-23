@@ -26,6 +26,7 @@ public sealed partial class StatusBarViewModel : ObservableObject, IDisposable
         RawFrameStore store,
         IAlarmEngine alarmEngine,
         ISessionState sessionState,
+        ISignalDecoder decoder,
         IScheduler uiScheduler)
     {
         var window = TimeSpan.FromSeconds(1);
@@ -45,8 +46,11 @@ public sealed partial class StatusBarViewModel : ObservableObject, IDisposable
             .Select(_ => store.DroppedCount)
             .Subscribe(v => DroppedFrames = v));
 
-        // DecodeFailures: SignalValue에 Status 속성이 없어 Phase 3a에서는 0으로 유지.
-        // Phase 3b에서 SignalValue에 Status 필드 추가 후 해당 Where+Scan 블록 복구.
+        // UnknownFrames 스트림을 1초 윈도우로 버퍼링하고 누적 합산
+        _subscriptions.Add(decoder.UnknownFrames
+            .Buffer(window, uiScheduler)
+            .Scan(0L, (acc, batch) => acc + batch.Count)
+            .Subscribe(v => DecodeFailures = v));
 
         var initialActive = alarmEngine.CurrentAlarms.Count(a => a.Active);
         ActiveAlarms = initialActive;

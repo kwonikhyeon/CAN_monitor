@@ -30,6 +30,12 @@ public class StatusBarViewModelTests
         public void ReplaceRules(IReadOnlyList<IAlarmRule> rules) { }
     }
 
+    private sealed class FakeDecoder : ISignalDecoder
+    {
+        public IReadOnlyList<SignalValue> Decode(CanFrame frame) => Array.Empty<SignalValue>();
+        public IObservable<CanFrame> UnknownFrames => Observable.Never<CanFrame>();
+    }
+
     private static CanFrame MakeFrame(CanDirection dir)
         => new(0x100, false, ReadOnlyMemory<byte>.Empty, DateTimeOffset.UtcNow, dir);
 
@@ -45,7 +51,7 @@ public class StatusBarViewModelTests
         var alarms = new FakeAlarmEngine();
         var session = new FakeSessionState();
 
-        var vm = new StatusBarViewModel(hub, store, alarms, session, sched);
+        var vm = new StatusBarViewModel(hub, store, alarms, session, new FakeDecoder(), sched);
 
         frames.OnNext(MakeFrame(CanDirection.Rx));
         frames.OnNext(MakeFrame(CanDirection.Rx));
@@ -68,7 +74,7 @@ public class StatusBarViewModelTests
         var alarms = new FakeAlarmEngine();
         var session = new FakeSessionState();
 
-        var vm = new StatusBarViewModel(hub, store, alarms, session, sched);
+        var vm = new StatusBarViewModel(hub, store, alarms, session, new FakeDecoder(), sched);
 
         sched.AdvanceBy(TimeSpan.FromSeconds(1).Ticks);
 
@@ -83,7 +89,7 @@ public class StatusBarViewModelTests
         var store = new RawFrameStore();
         var alarms = new FakeAlarmEngine();
         var session = new FakeSessionState();
-        var vm = new StatusBarViewModel(hub, store, alarms, session, sched);
+        var vm = new StatusBarViewModel(hub, store, alarms, session, new FakeDecoder(), sched);
 
         alarms.Changes.OnNext(new AlarmState("A1", AlarmSeverity.Warning, "x", true, DateTimeOffset.UtcNow));
         alarms.Changes.OnNext(new AlarmState("A2", AlarmSeverity.Error, "y", true, DateTimeOffset.UtcNow));
@@ -101,7 +107,7 @@ public class StatusBarViewModelTests
         var store = new RawFrameStore();
         var alarms = new FakeAlarmEngine();
         var session = new FakeSessionState();
-        var vm = new StatusBarViewModel(hub, store, alarms, session, sched);
+        var vm = new StatusBarViewModel(hub, store, alarms, session, new FakeDecoder(), sched);
 
         session.State.OnNext(ConnectionState.Connected);
         sched.AdvanceBy(TimeSpan.FromSeconds(1).Ticks);
@@ -117,7 +123,7 @@ public class StatusBarViewModelTests
         var store = new RawFrameStore();
         var alarms = new FakeAlarmEngine();
         var session = new FakeSessionState();
-        var vm = new StatusBarViewModel(hub, store, alarms, session, sched);
+        var vm = new StatusBarViewModel(hub, store, alarms, session, new FakeDecoder(), sched);
 
         session.Dbc.OnNext(new DbcFileOption("x/y.dbc", "120HP_NoPto.dbc", DbcSource.Confirmed));
         sched.AdvanceBy(1);
