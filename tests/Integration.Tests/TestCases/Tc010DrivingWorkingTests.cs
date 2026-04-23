@@ -7,6 +7,7 @@ using CanMonitor.Core.Models;
 using CanMonitor.Core.Testing;
 using CanMonitor.Infrastructure.Can.Virtual;
 using FluentAssertions;
+using System.Reactive.Linq;
 using Xunit;
 
 namespace CanMonitor.Integration.Tests.TestCases;
@@ -28,6 +29,8 @@ public sealed class Tc010DrivingWorkingTests
                 new SignalValue("Operating_Mode", "Working_Status", 1 - driving, 1 - driving, null, frame.Timestamp),
             };
         }
+
+        public IObservable<CanFrame> UnknownFrames => Observable.Never<CanFrame>();
     }
 
     [Fact]

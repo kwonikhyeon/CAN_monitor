@@ -1,18 +1,27 @@
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using CanMonitor.Core.Abstractions;
 using CanMonitor.Core.Models;
 
 namespace CanMonitor.Dbc;
 
-public sealed class SignalDecoder : ISignalDecoder
+public sealed class SignalDecoder : ISignalDecoder, IDisposable
 {
     private readonly IDbcProvider _dbc;
+    private readonly Subject<CanFrame> _unknown = new();
+
     public SignalDecoder(IDbcProvider dbc) => _dbc = dbc;
+
+    public IObservable<CanFrame> UnknownFrames => _unknown.AsObservable();
 
     public IReadOnlyList<SignalValue> Decode(CanFrame frame)
     {
         var db = _dbc.Current;                                // 시작 시점의 스냅샷을 캡처
         if (!db.MessagesById.TryGetValue(frame.Id, out var msg))
+        {
+            _unknown.OnNext(frame);
             return Array.Empty<SignalValue>();
+        }
 
         var payload = frame.Data.Span;
         var results = new SignalValue[msg.Signals.Length];
@@ -28,6 +37,12 @@ public sealed class SignalDecoder : ISignalDecoder
             results[i] = new SignalValue(msg.Name, sig.Name, raw, phys, sig.Unit, frame.Timestamp);
         }
         return results;
+    }
+
+    public void Dispose()
+    {
+        _unknown.OnCompleted();
+        _unknown.Dispose();
     }
 
     private static long ExtractIntel(ReadOnlySpan<byte> data, int startBit, int length, bool isSigned)

@@ -136,4 +136,20 @@ public sealed class SignalDecoderTests
         firstBatch.Single().SignalName.Should().Be("A");
         secondBatch.Single().SignalName.Should().Be("B");
     }
+
+    [Fact]
+    public void Unknown_id_publishes_to_UnknownFrames_and_returns_empty()
+    {
+        var provider = new FakeDbcProvider(DbcDatabase.Empty);
+        var sut = new SignalDecoder(provider);
+
+        var seen = new List<CanFrame>();
+        using var sub = sut.UnknownFrames.Subscribe(seen.Add);
+
+        var frame = new CanFrame(0xDEAD, true, new byte[] { 0 }, DateTimeOffset.UtcNow, CanDirection.Rx);
+        var result = sut.Decode(frame);
+
+        result.Should().BeEmpty();
+        seen.Should().ContainSingle().Which.Id.Should().Be(0xDEADu);
+    }
 }

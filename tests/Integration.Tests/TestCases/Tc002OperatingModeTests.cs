@@ -7,6 +7,7 @@ using CanMonitor.Core.Models;
 using CanMonitor.Core.Testing;
 using CanMonitor.Infrastructure.Can.Virtual;
 using FluentAssertions;
+using System.Reactive.Linq;
 using Xunit;
 
 namespace CanMonitor.Integration.Tests.TestCases;
@@ -27,6 +28,8 @@ public sealed class Tc002OperatingModeTests
             }
             return Array.Empty<SignalValue>();
         }
+
+        public IObservable<CanFrame> UnknownFrames => Observable.Never<CanFrame>();
     }
 
     [Fact]
