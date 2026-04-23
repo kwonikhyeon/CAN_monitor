@@ -14,7 +14,7 @@ public class DashboardNavTargetTests
         var target = new DashboardNavTarget();
         target.Key.Should().Be("Dashboard");
         target.Title.Should().Be("Dashboard");
-        target.IconGlyph.Should().Be("BarChart4");
+        target.IconGlyph.Should().Be("\uE80A");
         target.Order.Should().Be(10);
     }
 

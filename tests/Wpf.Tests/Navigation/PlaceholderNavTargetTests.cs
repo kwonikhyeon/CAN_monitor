@@ -20,10 +20,10 @@ public class PlaceholderNavTargetTests
     [Fact]
     public void Properties_reflect_constructor_arguments()
     {
-        var target = new PlaceholderNavTarget("Transmit", "Send", "Transmit", 30);
+        var target = new PlaceholderNavTarget("Transmit", "\uE724", "Transmit", 30);
         target.Key.Should().Be("Transmit");
         target.Title.Should().Be("Transmit");
-        target.IconGlyph.Should().Be("Send");
+        target.IconGlyph.Should().Be("\uE724");
         target.Order.Should().Be(30);
     }
 }

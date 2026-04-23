@@ -48,15 +48,15 @@ public partial class App : WpfApplication
             .AddSingleton<StatusBarViewModel>()
             .AddSingleton<DashboardViewModel>()
             .AddSingleton<INavTarget, DashboardNavTarget>()                                         // Order=10
-            .AddSingleton<INavTarget>(_ => new PlaceholderNavTarget("Raw",       "BulletedList",   "Raw Log",         20))
-            .AddSingleton<INavTarget>(_ => new PlaceholderNavTarget("Transmit",  "Send",           "Transmit",        30))
-            .AddSingleton<INavTarget>(_ => new PlaceholderNavTarget("Test",      "TestBeaker",     "Test Runner",     40))
-            .AddSingleton<INavTarget>(_ => new PlaceholderNavTarget("DBC",       "Edit",           "DBC Editor",      50))
-            .AddSingleton<INavTarget>(_ => new PlaceholderNavTarget("Input",     "GameController", "Input Emulation", 60))
-            .AddSingleton<INavTarget>(_ => new PlaceholderNavTarget("Heartbeat", "Heart",          "Heartbeat",       70))
-            .AddSingleton<IDashboardWidget>(_ => new PlaceholderWidget("Trend Chart",   620, 280))
-            .AddSingleton<IDashboardWidget>(_ => new PlaceholderWidget("Signal Values", 400, 280))
-            .AddSingleton<IDashboardWidget>(_ => new PlaceholderWidget("Alarm Panel",   1040, 220));
+            .AddSingleton<INavTarget>(_ => new PlaceholderNavTarget("Raw",       "\uE8FD", "Raw Log",         20))
+            .AddSingleton<INavTarget>(_ => new PlaceholderNavTarget("Transmit",  "\uE724", "Transmit",        30))
+            .AddSingleton<INavTarget>(_ => new PlaceholderNavTarget("Test",      "\uE90F", "Test Runner",     40))
+            .AddSingleton<INavTarget>(_ => new PlaceholderNavTarget("DBC",       "\uE70F", "DBC Editor",      50))
+            .AddSingleton<INavTarget>(_ => new PlaceholderNavTarget("Input",     "\uE7FC", "Input Emulation", 60))
+            .AddSingleton<INavTarget>(_ => new PlaceholderNavTarget("Heartbeat", "\uEB51", "Heartbeat",       70))
+            .AddSingleton<IDashboardWidget>(_ => new PlaceholderWidget("Trend Chart",   280, row: 0, column: 0))
+            .AddSingleton<IDashboardWidget>(_ => new PlaceholderWidget("Signal Values", 280, row: 0, column: 1))
+            .AddSingleton<IDashboardWidget>(_ => new PlaceholderWidget("Alarm Panel",   220, row: 1, column: 0, columnSpan: 2));
     }
 
     protected override async void OnExit(ExitEventArgs e)

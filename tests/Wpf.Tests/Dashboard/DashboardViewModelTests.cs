@@ -10,9 +10,9 @@ public class DashboardViewModelTests
     [Fact]
     public void Widgets_preserves_registration_order()
     {
-        var a = new PlaceholderWidget("A", 100, 100);
-        var b = new PlaceholderWidget("B", 100, 100);
-        var c = new PlaceholderWidget("C", 100, 100);
+        var a = new PlaceholderWidget("A", 100);
+        var b = new PlaceholderWidget("B", 100);
+        var c = new PlaceholderWidget("C", 100);
 
         var vm = new DashboardViewModel(new[] { a, b, c });
 

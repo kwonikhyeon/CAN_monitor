@@ -51,7 +51,8 @@
             <ListBox Grid.Column="0" Background="{DynamicResource RailBackgroundBrush}"
                      ItemsSource="{Binding NavTargets}"
                      SelectedItem="{Binding SelectedTarget, Mode=TwoWay}"
-                     BorderThickness="0" HorizontalContentAlignment="Stretch">
+                     BorderThickness="0" HorizontalContentAlignment="Stretch"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="Padding" Value="0"/>
@@ -66,7 +67,8 @@
                                            HorizontalAlignment="Center"/>
                                 <TextBlock Text="{Binding Title}" FontSize="9"
                                            Foreground="{DynamicResource RailForegroundBrush}"
-                                           HorizontalAlignment="Center" Margin="0,2,0,0"/>
+                                           HorizontalAlignment="Center" Margin="2,2,2,0"
+                                           TextTrimming="CharacterEllipsis"/>
                             </StackPanel>
                         </Grid>
                     </DataTemplate>
