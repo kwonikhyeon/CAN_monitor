@@ -2,5 +2,7 @@ namespace CanMonitor.Wpf.Infrastructure;
 
 public enum AdapterKind
 {
-    Virtual
+    Virtual,
+    CandleLightUsb,
+    SlcanSerial
 }

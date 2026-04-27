@@ -21,4 +21,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
     <PackageReference Include="System.Reactive" Version="*" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Native\Candle.dll" Condition="Exists('Native\Candle.dll')" Link="candle.dll" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

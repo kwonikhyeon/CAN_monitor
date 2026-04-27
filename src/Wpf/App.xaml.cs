@@ -8,6 +8,7 @@ using CanMonitor.Wpf.Dashboard.Widgets;
 using CanMonitor.Wpf.Infrastructure;
 using CanMonitor.Wpf.Navigation;
 using CanMonitor.Wpf.Shell;
+using CanMonitor.Wpf.Transmit;
 using CanMonitor.Core.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -46,11 +47,13 @@ public partial class App : WpfApplication
             .AddSingleton<ShellViewModel>()
             .AddSingleton<SessionViewModel>()
             .AddSingleton<ISessionState>(sp => sp.GetRequiredService<SessionViewModel>())
+            .AddSingleton<ICanFrameTransmitter>(sp => sp.GetRequiredService<SessionViewModel>())
             .AddSingleton<StatusBarViewModel>()
             .AddSingleton<DashboardViewModel>()
+            .AddTransient<TransmitViewModel>()
             .AddSingleton<INavTarget, DashboardNavTarget>()                                         // Order=10 (최상단)
             .AddSingleton<INavTarget>(_ => new PlaceholderNavTarget("Raw",       "\uE8FD", "Raw Log",         20))
-            .AddSingleton<INavTarget>(_ => new PlaceholderNavTarget("Transmit",  "\uE724", "Transmit",        30))
+            .AddSingleton<INavTarget, TransmitNavTarget>()
             .AddSingleton<INavTarget>(_ => new PlaceholderNavTarget("Test",      "\uE90F", "Test Runner",     40))
             .AddSingleton<INavTarget>(_ => new PlaceholderNavTarget("DBC",       "\uE70F", "DBC Editor",      50))
             .AddSingleton<INavTarget>(_ => new PlaceholderNavTarget("Input",     "\uE7FC", "Input Emulation", 60))

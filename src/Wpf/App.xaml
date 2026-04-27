@@ -4,9 +4,11 @@
              xmlns:dashVm="clr-namespace:CanMonitor.Wpf.Dashboard"
              xmlns:dashWidget="clr-namespace:CanMonitor.Wpf.Dashboard.Widgets"
              xmlns:navVm="clr-namespace:CanMonitor.Wpf.Navigation"
+             xmlns:txVm="clr-namespace:CanMonitor.Wpf.Transmit"
              xmlns:dashView="clr-namespace:CanMonitor.Wpf.Dashboard"
              xmlns:wView="clr-namespace:CanMonitor.Wpf.Dashboard.Widgets"
-             xmlns:navView="clr-namespace:CanMonitor.Wpf.Navigation">
+             xmlns:navView="clr-namespace:CanMonitor.Wpf.Navigation"
+             xmlns:txView="clr-namespace:CanMonitor.Wpf.Transmit">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -20,6 +22,9 @@
             </DataTemplate>
             <DataTemplate DataType="{x:Type navVm:PlaceholderViewModel}">
                 <navView:PlaceholderView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type txVm:TransmitViewModel}">
+                <txView:TransmitView/>
             </DataTemplate>
             <DataTemplate DataType="{x:Type wView:PlaceholderWidgetViewModel}">
                 <wView:PlaceholderWidgetView/>

@@ -11,7 +11,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace CanMonitor.Wpf.Shell;
 
-public sealed partial class SessionViewModel : ObservableObject, ISessionState, IDisposable
+public sealed partial class SessionViewModel : ObservableObject, ISessionState, ICanFrameTransmitter, IDisposable
 {
     private readonly Wpf.Infrastructure.ICanBusFactory _factory;
     private readonly IDbcProvider _dbcProvider;
@@ -32,6 +32,8 @@ public sealed partial class SessionViewModel : ObservableObject, ISessionState, 
 
     [ObservableProperty] private ConnectionState _state = ConnectionState.Disconnected;
     [ObservableProperty] private string? _errorMessage;
+    [ObservableProperty] private int _bitrate = 500_000;
+    [ObservableProperty] private string _channelId = "0";
 
     public SessionViewModel(
         Wpf.Infrastructure.ICanBusFactory factory,
@@ -77,6 +79,7 @@ public sealed partial class SessionViewModel : ObservableObject, ISessionState, 
 
     public IObservable<ConnectionState> StateChanges => _stateSubject;
     public IObservable<DbcFileOption?> DbcChanges => _dbcSubject;
+    public IObservable<CanFrame> Frames => _hub.Frames;
 
     public async Task InitializeAsync()
     {
@@ -118,7 +121,7 @@ public sealed partial class SessionViewModel : ObservableObject, ISessionState, 
         {
             SetState(ConnectionState.Connecting);
             _currentBus = _factory.Create(SelectedAdapter.Kind);
-            await _currentBus.OpenAsync(new CanBusOptions());
+            await _currentBus.OpenAsync(new CanBusOptions(Bitrate, ChannelId));
             // 새로운 CanReceivePipeline 생성: 버스 프레임 → 디코더 → AlarmEngine 제출
             _currentPipeline = new CanReceivePipeline(_currentBus.Frames, _decoder, _alarmEngine);
             _currentTxScheduler = new TxScheduler(_currentBus);
@@ -143,6 +146,14 @@ public sealed partial class SessionViewModel : ObservableObject, ISessionState, 
 
     [RelayCommand]
     private Task Disconnect() => DisconnectAsync();
+
+    public Task SendFrameAsync(CanFrame frame, CancellationToken ct = default)
+    {
+        if (_currentBus is null || State != ConnectionState.Connected)
+            throw new InvalidOperationException("CAN bus is not connected.");
+
+        return _currentBus.SendAsync(frame, ct);
+    }
 
     public async Task DisconnectAsync()
     {
