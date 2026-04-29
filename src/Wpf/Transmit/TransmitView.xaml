@@ -50,6 +50,70 @@
                                 Margin="6,0,0,0"/>
                     </UniformGrid>
 
+                    <TextBlock Text="Duty command"
+                               Foreground="{DynamicResource TextSecondaryBrush}"
+                               Margin="0,0,0,6"/>
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="36"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="54"/>
+                            <ColumnDefinition Width="62"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="CH1" VerticalAlignment="Center" Margin="0,0,8,6"/>
+                        <Slider Grid.Row="0" Grid.Column="1"
+                                Minimum="0"
+                                Maximum="100"
+                                TickFrequency="1"
+                                Value="{Binding Channel1DutyPercent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                VerticalAlignment="Center"
+                                Margin="0,0,8,6"/>
+                        <TextBlock Grid.Row="0" Grid.Column="2"
+                                   Text="{Binding Channel1DutyText}"
+                                   FontFamily="Consolas"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,8,6"/>
+                        <Button Grid.Row="0" Grid.Column="3"
+                                Content="SEND"
+                                Command="{Binding SendChannel1DutyCommand}"
+                                MinHeight="28"
+                                Margin="0,0,0,6"/>
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="CH2" VerticalAlignment="Center" Margin="0,0,8,6"/>
+                        <Slider Grid.Row="1" Grid.Column="1"
+                                Minimum="0"
+                                Maximum="100"
+                                TickFrequency="1"
+                                Value="{Binding Channel2DutyPercent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                VerticalAlignment="Center"
+                                Margin="0,0,8,6"/>
+                        <TextBlock Grid.Row="1" Grid.Column="2"
+                                   Text="{Binding Channel2DutyText}"
+                                   FontFamily="Consolas"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,8,6"/>
+                        <Button Grid.Row="1" Grid.Column="3"
+                                Content="SEND"
+                                Command="{Binding SendChannel2DutyCommand}"
+                                MinHeight="28"
+                                Margin="0,0,0,6"/>
+
+                        <Button Grid.Row="2"
+                                Grid.Column="1"
+                                Grid.ColumnSpan="3"
+                                Content="SEND BOTH"
+                                Command="{Binding SendBothDutyCommand}"
+                                MinHeight="30"/>
+                    </Grid>
+
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="112"/>

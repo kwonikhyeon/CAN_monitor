@@ -7,11 +7,11 @@ public sealed record PulseTelemetrySample(
     bool InputHigh,
     bool PwmEnabled,
     bool WatchdogTriggered,
-    int AdcRaw,
+    int CommandedFrequencyHz,
     int HighUs,
     int PeriodUs)
 {
-    public double Voltage => AdcRaw * 3.3 / 4095.0;
     public double DutyPercent => IsValid && PeriodUs > 0 ? HighUs * 100.0 / PeriodUs : 0.0;
-    public double FrequencyHz => IsValid && PeriodUs > 0 ? 1_000_000.0 / PeriodUs : 0.0;
+    public double MeasuredFrequencyHz => IsValid && PeriodUs > 0 ? 1_000_000.0 / PeriodUs : 0.0;
+    public double FrequencyErrorHz => IsValid ? MeasuredFrequencyHz - CommandedFrequencyHz : 0.0;
 }

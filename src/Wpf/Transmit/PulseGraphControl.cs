@@ -8,6 +8,9 @@ namespace CanMonitor.Wpf.Transmit;
 
 public sealed class PulseGraphControl : FrameworkElement
 {
+    private const double MinFrequencyHz = 800.0;
+    private const double MaxFrequencyHz = 3000.0;
+
     public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(
         nameof(ItemsSource),
         typeof(IEnumerable),
@@ -65,6 +68,7 @@ public sealed class PulseGraphControl : FrameworkElement
         var axisPen = new Pen(new SolidColorBrush(Color.FromRgb(109, 125, 148)), 1.2);
         var labelBrush = new SolidColorBrush(Color.FromRgb(172, 184, 202));
         var mutedBrush = new SolidColorBrush(Color.FromRgb(112, 126, 145));
+        var frequencyBrush = new SolidColorBrush(Color.FromRgb(255, 196, 87));
 
         dc.DrawRoundedRectangle(background, null, bounds, 7, 7);
 
@@ -80,7 +84,7 @@ public sealed class PulseGraphControl : FrameworkElement
             return;
         }
 
-        DrawWaveform(dc, plot, samples, TraceBrush);
+        DrawWaveform(dc, plot, samples, TraceBrush, frequencyBrush);
     }
 
     private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -137,7 +141,11 @@ public sealed class PulseGraphControl : FrameworkElement
         DrawText(dc, "now", new Point(plot.Right - 24, plot.Bottom + 8), labelBrush, 12);
     }
 
-    private void DrawWaveform(DrawingContext dc, Rect plot, IReadOnlyList<PulseTelemetrySample> samples, Brush traceBrush)
+    private void DrawWaveform(DrawingContext dc,
+                              Rect plot,
+                              IReadOnlyList<PulseTelemetrySample> samples,
+                              Brush traceBrush,
+                              Brush frequencyBrush)
     {
         var now = DateTimeOffset.UtcNow;
         var window = TimeSpan.FromMilliseconds(Math.Max(20, TimeWindowMilliseconds));
@@ -194,9 +202,52 @@ public sealed class PulseGraphControl : FrameworkElement
         geometry.Freeze();
 
         dc.DrawGeometry(null, tracePen, geometry);
+        DrawFrequencyTrend(dc, plot, start, window, visible, frequencyBrush);
 
         var latestSample = visible[^1];
         DrawLatestMarker(dc, plot, latestSample, highY, lowY, traceBrush, fillBrush);
+    }
+
+    private void DrawFrequencyTrend(DrawingContext dc,
+                                    Rect plot,
+                                    DateTimeOffset start,
+                                    TimeSpan window,
+                                    IReadOnlyList<PulseTelemetrySample> samples,
+                                    Brush frequencyBrush)
+    {
+        var valid = samples
+            .Where(sample => sample.IsValid && sample.MeasuredFrequencyHz > 0)
+            .ToList();
+        if (valid.Count == 0)
+            return;
+
+        var pen = new Pen(frequencyBrush, 1.6)
+        {
+            DashStyle = DashStyles.Dash,
+            StartLineCap = PenLineCap.Round,
+            EndLineCap = PenLineCap.Round,
+            LineJoin = PenLineJoin.Round
+        };
+
+        var geometry = new StreamGeometry();
+        using (var ctx = geometry.Open())
+        {
+            var hasPoint = false;
+            foreach (var sample in valid)
+            {
+                LineTo(ctx,
+                    MapX(plot, start, window, sample.Timestamp),
+                    MapFrequencyY(plot, sample.MeasuredFrequencyHz),
+                    ref hasPoint);
+            }
+        }
+        geometry.Freeze();
+        dc.DrawGeometry(null, pen, geometry);
+
+        var latest = valid[^1];
+        var label = $"cmd {latest.CommandedFrequencyHz:0} Hz  meas {latest.MeasuredFrequencyHz:0.0} Hz";
+        var text = CreateText(label, frequencyBrush, 12);
+        dc.DrawText(text, new Point(plot.Right - text.Width - 8, plot.Top + 6));
     }
 
     private static void DrawPulses(StreamGeometryContext ctx,
@@ -263,6 +314,13 @@ public sealed class PulseGraphControl : FrameworkElement
     {
         var ratio = (timestamp - start).TotalMilliseconds / window.TotalMilliseconds;
         return plot.Left + Math.Clamp(ratio, 0, 1) * plot.Width;
+    }
+
+    private static double MapFrequencyY(Rect plot, double frequencyHz)
+    {
+        var ratio = (Math.Clamp(frequencyHz, MinFrequencyHz, MaxFrequencyHz) - MinFrequencyHz) /
+                    (MaxFrequencyHz - MinFrequencyHz);
+        return plot.Bottom - ratio * plot.Height;
     }
 
     private static void DrawLatestMarker(DrawingContext dc,

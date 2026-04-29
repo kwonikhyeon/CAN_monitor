@@ -12,6 +12,10 @@ public sealed partial class TransmitViewModel : ObservableObject, IDisposable
     private const byte CommandOff = 0x00;
     private const byte CommandOn = 0x01;
     private const byte CommandToggle = 0x02;
+    private const byte CommandSetDuty = 0x10;
+    private const byte DutyChannel1 = 0x01;
+    private const byte DutyChannel2 = 0x02;
+    private const int PwmMaxValue = 4095;
     private const uint PcHeartbeatCanId = 0x610;
     private const uint TeensyHeartbeatCanId = 0x611;
     private const uint Pwm1TelemetryCanId = 0x621;
@@ -36,6 +40,8 @@ public sealed partial class TransmitViewModel : ObservableObject, IDisposable
     [ObservableProperty] private string _teensyHeartbeatStatus = "No heartbeat";
     [ObservableProperty] private string _lastTeensyHeartbeatAtText = "-";
     [ObservableProperty] private double _timeWindowMilliseconds = 20;
+    [ObservableProperty] private double _channel1DutyPercent = 50;
+    [ObservableProperty] private double _channel2DutyPercent = 50;
     [ObservableProperty] private string? _errorMessage;
 
     public TransmitViewModel(ICanFrameTransmitter transmitter)
@@ -49,6 +55,9 @@ public sealed partial class TransmitViewModel : ObservableObject, IDisposable
             SendOnCommand.NotifyCanExecuteChanged();
             SendOffCommand.NotifyCanExecuteChanged();
             SendToggleCommand.NotifyCanExecuteChanged();
+            SendChannel1DutyCommand.NotifyCanExecuteChanged();
+            SendChannel2DutyCommand.NotifyCanExecuteChanged();
+            SendBothDutyCommand.NotifyCanExecuteChanged();
         });
         _frameSubscription = transmitter.Frames.Subscribe(HandleFrame);
         _heartbeatTimer = new DispatcherTimer
@@ -62,16 +71,28 @@ public sealed partial class TransmitViewModel : ObservableObject, IDisposable
 
     public bool CanSend => ConnectionState == ConnectionState.Connected;
     public string ControlIdText => "0x600";
-    public string ProtocolText => "data[0]: 00=OFF, 01=ON, 02=TOGGLE";
+    public string ProtocolText => "0x600: 00=OFF, 01=ON, 02=TOGGLE, 10=SET_DUTY [mask,u16 duty]";
     public string HeartbeatProtocolText => "PC -> 0x610#A5 every 1s, Teensy -> 0x611#A5";
-    public string TelemetryProtocolText => "PWM telemetry: 0x621=A0/PWM2, 0x622=A1/PWM3";
+    public string TelemetryProtocolText => "PWM telemetry: 0x621=A0/PWM2, 0x622=A1/PWM5, data[2..3]=cmd Hz";
     public string TimeWindowText => $"{TimeWindowMilliseconds:0} ms";
+    public string Channel1DutyText => $"{Channel1DutyPercent:0.0}%";
+    public string Channel2DutyText => $"{Channel2DutyPercent:0.0}%";
     public PulseTelemetryChannelViewModel Channel1 { get; } = new("A0 -> PWM2", Pwm1TelemetryCanId);
-    public PulseTelemetryChannelViewModel Channel2 { get; } = new("A1 -> PWM3", Pwm2TelemetryCanId);
+    public PulseTelemetryChannelViewModel Channel2 { get; } = new("A1 -> PWM5", Pwm2TelemetryCanId);
 
     partial void OnTimeWindowMillisecondsChanged(double value)
     {
         OnPropertyChanged(nameof(TimeWindowText));
+    }
+
+    partial void OnChannel1DutyPercentChanged(double value)
+    {
+        OnPropertyChanged(nameof(Channel1DutyText));
+    }
+
+    partial void OnChannel2DutyPercentChanged(double value)
+    {
+        OnPropertyChanged(nameof(Channel2DutyText));
     }
 
     [RelayCommand(CanExecute = nameof(CanSend))]
@@ -82,6 +103,24 @@ public sealed partial class TransmitViewModel : ObservableObject, IDisposable
 
     [RelayCommand(CanExecute = nameof(CanSend))]
     private Task SendToggleAsync() => SendControlCommandAsync("TOGGLE", CommandToggle);
+
+    [RelayCommand(CanExecute = nameof(CanSend))]
+    private Task SendChannel1DutyAsync() => SendDutyCommandAsync("CH1 DUTY", DutyChannel1, Channel1DutyPercent);
+
+    [RelayCommand(CanExecute = nameof(CanSend))]
+    private Task SendChannel2DutyAsync() => SendDutyCommandAsync("CH2 DUTY", DutyChannel2, Channel2DutyPercent);
+
+    [RelayCommand(CanExecute = nameof(CanSend))]
+    private Task SendBothDutyAsync()
+    {
+        return SendBothDutyCommandsAsync();
+    }
+
+    private async Task SendBothDutyCommandsAsync()
+    {
+        await SendDutyCommandAsync("CH1 DUTY", DutyChannel1, Channel1DutyPercent);
+        await SendDutyCommandAsync("CH2 DUTY", DutyChannel2, Channel2DutyPercent);
+    }
 
     private async Task SendControlCommandAsync(string label, byte command)
     {
@@ -105,9 +144,52 @@ public sealed partial class TransmitViewModel : ObservableObject, IDisposable
         }
     }
 
+    private async Task SendDutyCommandAsync(string label, byte channelMask, double dutyPercent)
+    {
+        var dutyRaw = PercentToPwmRaw(dutyPercent);
+        var payload = new[]
+        {
+            CommandSetDuty,
+            channelMask,
+            (byte)(dutyRaw & 0xFF),
+            (byte)((dutyRaw >> 8) & 0xFF)
+        };
+
+        try
+        {
+            var frame = new CanFrame(
+                ControlCanId,
+                IsExtended: false,
+                payload,
+                DateTimeOffset.UtcNow,
+                CanDirection.Tx);
+
+            await _transmitter.SendFrameAsync(frame);
+            LastCommand = $"{label} {dutyPercent:0.0}% ({ControlCanId:X3}#{string.Join("", payload.Select(b => b.ToString("X2")))})";
+            LastSentAt = DateTimeOffset.Now.ToString("HH:mm:ss.fff");
+            ErrorMessage = null;
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+    }
+
+    private static int PercentToPwmRaw(double dutyPercent)
+    {
+        var clamped = Math.Clamp(dutyPercent, 0.0, 100.0);
+        return (int)Math.Round(clamped * PwmMaxValue / 100.0);
+    }
+
     partial void OnConnectionStateChanged(ConnectionState value)
     {
         OnPropertyChanged(nameof(CanSend));
+        SendOnCommand.NotifyCanExecuteChanged();
+        SendOffCommand.NotifyCanExecuteChanged();
+        SendToggleCommand.NotifyCanExecuteChanged();
+        SendChannel1DutyCommand.NotifyCanExecuteChanged();
+        SendChannel2DutyCommand.NotifyCanExecuteChanged();
+        SendBothDutyCommand.NotifyCanExecuteChanged();
         if (value == ConnectionState.Connected)
         {
             _heartbeatTimer.Start();
@@ -211,7 +293,7 @@ public sealed partial class TransmitViewModel : ObservableObject, IDisposable
             InputHigh: (flags & 0x02) != 0,
             PwmEnabled: (flags & 0x04) != 0,
             WatchdogTriggered: (flags & 0x08) != 0,
-            AdcRaw: ReadUInt16Le(data, 2),
+            CommandedFrequencyHz: ReadUInt16Le(data, 2),
             HighUs: ReadUInt16Le(data, 4),
             PeriodUs: ReadUInt16Le(data, 6)));
     }

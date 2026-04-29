@@ -37,6 +37,9 @@ public sealed class TransmitViewModelTests
         sut.SendOnCommand.CanExecute(null).Should().BeFalse();
         sut.SendOffCommand.CanExecute(null).Should().BeFalse();
         sut.SendToggleCommand.CanExecute(null).Should().BeFalse();
+        sut.SendChannel1DutyCommand.CanExecute(null).Should().BeFalse();
+        sut.SendChannel2DutyCommand.CanExecute(null).Should().BeFalse();
+        sut.SendBothDutyCommand.CanExecute(null).Should().BeFalse();
     }
 
     [Fact]
@@ -81,6 +84,42 @@ public sealed class TransmitViewModelTests
     }
 
     [Fact]
+    public async Task SendChannel1Duty_sends_0x600_10_mask_01_raw_duty()
+    {
+        var transmitter = new FakeTransmitter();
+        transmitter.SetState(ConnectionState.Connected);
+        var sut = new TransmitViewModel(transmitter)
+        {
+            Channel1DutyPercent = 25
+        };
+
+        await sut.SendChannel1DutyCommand.ExecuteAsync(null);
+
+        transmitter.Sent.Should().ContainSingle();
+        transmitter.Sent[0].Id.Should().Be(0x600);
+        transmitter.Sent[0].IsExtended.Should().BeFalse();
+        transmitter.Sent[0].Data.ToArray().Should().Equal(0x10, 0x01, 0x00, 0x04);
+    }
+
+    [Fact]
+    public async Task SendBothDuty_sends_one_frame_per_channel()
+    {
+        var transmitter = new FakeTransmitter();
+        transmitter.SetState(ConnectionState.Connected);
+        var sut = new TransmitViewModel(transmitter)
+        {
+            Channel1DutyPercent = 50,
+            Channel2DutyPercent = 100
+        };
+
+        await sut.SendBothDutyCommand.ExecuteAsync(null);
+
+        transmitter.Sent.Should().HaveCount(2);
+        transmitter.Sent[0].Data.ToArray().Should().Equal(0x10, 0x01, 0x00, 0x08);
+        transmitter.Sent[1].Data.ToArray().Should().Equal(0x10, 0x02, 0xFF, 0x0F);
+    }
+
+    [Fact]
     public void Pwm1TelemetryFrame_updates_channel1_samples()
     {
         var transmitter = new FakeTransmitter();
@@ -89,7 +128,7 @@ public sealed class TransmitViewModelTests
         transmitter.FramesSubject.OnNext(new CanFrame(
             0x621,
             IsExtended: false,
-            new byte[] { 0x12, 0x07, 0x34, 0x12, 0xE8, 0x03, 0xE2, 0x04 },
+            new byte[] { 0x12, 0x07, 0x20, 0x03, 0xE8, 0x03, 0xE2, 0x04 },
             DateTimeOffset.UtcNow,
             CanDirection.Rx));
 
@@ -99,10 +138,11 @@ public sealed class TransmitViewModelTests
         sample.IsValid.Should().BeTrue();
         sample.InputHigh.Should().BeTrue();
         sample.PwmEnabled.Should().BeTrue();
-        sample.AdcRaw.Should().Be(0x1234);
+        sample.CommandedFrequencyHz.Should().Be(800);
         sample.HighUs.Should().Be(1000);
         sample.PeriodUs.Should().Be(1250);
-        sample.FrequencyHz.Should().BeApproximately(800.0, 0.01);
+        sample.MeasuredFrequencyHz.Should().BeApproximately(800.0, 0.01);
+        sample.FrequencyErrorHz.Should().BeApproximately(0.0, 0.01);
         sample.DutyPercent.Should().BeApproximately(80.0, 0.01);
     }
 
@@ -115,12 +155,12 @@ public sealed class TransmitViewModelTests
         transmitter.FramesSubject.OnNext(new CanFrame(
             0x622,
             IsExtended: false,
-            new byte[] { 0x13, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00 },
+            new byte[] { 0x13, 0x00, 0xB8, 0x0B, 0x00, 0x00, 0x00, 0x00 },
             DateTimeOffset.UtcNow,
             CanDirection.Rx));
 
         sut.Channel2.Samples.Should().ContainSingle();
         sut.Channel2.Samples[0].IsValid.Should().BeFalse();
-        sut.Channel2.Samples[0].AdcRaw.Should().Be(2048);
+        sut.Channel2.Samples[0].CommandedFrequencyHz.Should().Be(3000);
     }
 }

@@ -35,8 +35,8 @@ public sealed partial class PulseTelemetryChannelViewModel : ObservableObject
             : sample.InputHigh ? "steady HIGH" : "steady LOW";
 
         MetricsText = sample.IsValid
-            ? $"ADC {sample.AdcRaw:0000} | {sample.Voltage:0.000} V | {sample.FrequencyHz:0.0} Hz | duty {sample.DutyPercent:0.00}%"
-            : $"ADC {sample.AdcRaw:0000} | {sample.Voltage:0.000} V | no valid pulses";
+            ? $"cmd {sample.CommandedFrequencyHz:0} Hz | measured {sample.MeasuredFrequencyHz:0.0} Hz | err {sample.FrequencyErrorHz:+0.0;-0.0;0.0} Hz | duty {sample.DutyPercent:0.00}%"
+            : $"cmd {sample.CommandedFrequencyHz:0} Hz | no valid pulses";
     }
 
     public void Reset()
